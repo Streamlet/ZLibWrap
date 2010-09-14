@@ -2,7 +2,7 @@
 //
 //    Copyright (C) Streamlet. All rights reserved.
 //
-//    File Name:   GZip.cpp
+//    File Name:   Unzip.cpp
 //    Author:      Streamlet
 //    Create Time: 2010-09-14
 //    Description: 

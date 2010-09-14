@@ -35,10 +35,10 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GZip.cpp">
+    <ClCompile Include="Zip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Zip.cpp">
+    <ClCompile Include="Unzip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

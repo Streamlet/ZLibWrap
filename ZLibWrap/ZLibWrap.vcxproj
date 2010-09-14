@@ -96,7 +96,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GZip.cpp" />
+    <ClCompile Include="Unzip.cpp" />
     <ClCompile Include="Zip.cpp" />
   </ItemGroup>
   <ItemGroup>
