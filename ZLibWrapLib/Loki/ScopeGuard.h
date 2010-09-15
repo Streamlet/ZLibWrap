@@ -18,7 +18,7 @@
 // $Id: ScopeGuard.h 799 2006-12-20 00:37:13Z rich_sposato $
 
 
-#include <loki/RefToValue.h>
+#include "RefToValue.h"
 
 /// \defgroup ExceptionGroup Exception-safe code
 
