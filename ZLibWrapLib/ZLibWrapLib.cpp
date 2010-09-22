@@ -18,12 +18,149 @@
 #include "ZLibWrapLib.h"
 #include "Encoding.h"
 #include "Loki/ScopeGuard.h"
+#include "ZLib/zip.h"
 #include "ZLib/unzip.h"
 #include <atlstr.h>
 
 
-BOOL ZipCompress(LPCTSTR /*lpszSourceFiles*/, LPCTSTR /*lpszDestFile*/)
+BOOL ZipAddFile(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFilePath)
 {
+    HANDLE hFile = CreateFileA(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,0, NULL);
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        return FALSE;
+    }
+
+    LOKI_ON_BLOCK_EXIT(CloseHandle, hFile);
+    
+    FILETIME ftUTC, ftLocal;
+
+    GetFileTime(hFile, NULL, NULL, &ftUTC);
+    FileTimeToLocalFileTime(&ftUTC, &ftLocal);
+
+    WORD wDate, wTime;
+    FileTimeToDosDateTime(&ftLocal, &wDate, &wTime);
+
+    zip_fileinfo FileInfo;
+    ZeroMemory(&FileInfo, sizeof(FileInfo));
+
+    FileInfo.dosDate = ((((DWORD)wDate) << 16) | (DWORD)wTime);
+    
+    if (zipOpenNewFileInZip(zf, lpszFileNameInZip, &FileInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 9) != ZIP_OK)
+    {
+        return FALSE;
+    }
+
+    LOKI_ON_BLOCK_EXIT(zipCloseFileInZip, zf);
+
+    const DWORD BUFFER_SIZE = 4096;
+    BYTE byBuffer[BUFFER_SIZE];
+
+    LARGE_INTEGER li = {};
+
+    if (!GetFileSizeEx(hFile, &li))
+    {
+        return FALSE;
+    }
+
+    while (li.QuadPart > 0)
+    {
+        DWORD dwSizeToRead = li.QuadPart > (LONGLONG)BUFFER_SIZE ? BUFFER_SIZE : (DWORD)li.LowPart;
+        DWORD dwRead = 0;
+
+        if (!ReadFile(hFile, byBuffer, dwSizeToRead, &dwRead, NULL))
+        {
+            return FALSE;
+        }
+
+        if (zipWriteInFileInZip(zf, byBuffer, dwRead) < 0)
+        {
+            return FALSE;
+        }
+
+        li.QuadPart -= (LONGLONG)dwRead;
+    }
+
+    return TRUE;
+}
+
+BOOL ZipAddFiles(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFiles)
+{
+    WIN32_FIND_DATAA wfd;
+    ZeroMemory(&wfd, sizeof(wfd));
+
+    HANDLE hFind = FindFirstFileA(lpszFiles, &wfd);
+
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+        return FALSE;
+    }
+
+    LOKI_ON_BLOCK_EXIT(FindClose, hFind);
+
+    CStringA strFilePathA = lpszFiles;
+    int nPos = strFilePathA.ReverseFind('\\');
+
+    if (nPos != -1)
+    {
+        strFilePathA = strFilePathA.Left(nPos + 1);
+    }
+    else
+    {
+        strFilePathA.Empty();
+    }
+
+    CStringA strFileNameInZipA = lpszFileNameInZip;
+    
+    do 
+    {
+        CStringA strFileNameA = wfd.cFileName;
+
+        if (strFileNameA == "." || strFileNameA == "..")
+        {
+            continue;
+        }
+
+        if ((wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+        {
+            if (!ZipAddFiles(zf, strFileNameInZipA + strFileNameA + "/", strFilePathA + strFileNameA + "\\*"))
+            {
+                return FALSE;
+            }
+        }
+        else
+        {
+            if (!ZipAddFile(zf, strFileNameInZipA + strFileNameA, strFilePathA + strFileNameA))
+            {
+                return FALSE;
+            }
+        }
+
+    } while (FindNextFileA(hFind, &wfd));
+
+    return TRUE;
+}
+
+BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile)
+{
+    CStringA strSourceFilesA = UCS2ToANSI(lpszSourceFiles);
+    CStringA strDestFiles = UCS2ToANSI(lpszDestFile);
+
+    zipFile zf = zipOpen64(strDestFiles, 0);
+
+    if (zf == NULL)
+    {
+        return FALSE;
+    }
+
+    LOKI_ON_BLOCK_EXIT(zipClose, zf, (const char *)NULL);
+
+    if (!ZipAddFiles(zf, "", strSourceFilesA))
+    {
+        return FALSE;
+    }
+
     return TRUE;
 }
 

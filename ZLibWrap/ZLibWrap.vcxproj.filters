@@ -35,10 +35,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Zip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Unzip.cpp">
+    <ClCompile Include="ZLibWarp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

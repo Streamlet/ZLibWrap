@@ -88,13 +88,8 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZLibWrapLib\ZLibWrapLib.vcxproj">
-      <Project>{5165f5bd-8224-4145-8d45-324968d4f2b0}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    <ProjectReference Include="..\ZLibWrap\ZLibWrap.vcxproj">
+      <Project>{e496b08e-bc62-461f-a503-0e1bbf8b1992}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

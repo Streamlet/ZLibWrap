@@ -23,6 +23,24 @@
 #define ZLIBWRAP_API __declspec(dllimport)
 #endif
 
+#include <Windows.h>
+
+//------------------------------------------------------------------------------
+// Description: Compress files to a ZIP file.
+// Parameter: lpszSourceFiles Source files, supporting wildcards.
+// Parameter: lpszDestFile The ZIP file path.
+// Return Value: TRUE/FALSE.
+//------------------------------------------------------------------------------
+ZLIBWRAP_API BOOL ZWZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile);
+
+//------------------------------------------------------------------------------
+// Description: Extract files from a ZIP file.
+// Parameter: lpszSourceFile Source ZIP file.
+// Parameter: lpszDestFolder The folder to output files. The parent of the
+//                           specified folder MUST exist.
+// Return Value: TRUE/FALSE.
+//------------------------------------------------------------------------------
+ZLIBWRAP_API BOOL ZWZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder);
 
 
 #endif // #ifndef __ZLIBWRAP_H_7D43AEA4_8EFB_40CA_9823_A6C3D38CC01C_INCLUDED__
