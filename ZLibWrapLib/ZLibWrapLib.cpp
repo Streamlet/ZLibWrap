@@ -25,7 +25,8 @@
 
 BOOL ZipAddFile(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFilePath)
 {
-    HANDLE hFile = CreateFileA(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,0, NULL);
+    DWORD dwAttr = (GetFileAttributesA(lpszFilePath) & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
+    HANDLE hFile = CreateFileA(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwAttr, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -124,6 +125,11 @@ BOOL ZipAddFiles(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFiles)
 
         if ((wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
         {
+            if (!ZipAddFile(zf, strFileNameInZipA + strFileNameA + "/", strFilePathA + strFileNameA))
+            {
+                return FALSE;
+            }
+
             if (!ZipAddFiles(zf, strFileNameInZipA + strFileNameA + "/", strFilePathA + strFileNameA + "\\*"))
             {
                 return FALSE;
