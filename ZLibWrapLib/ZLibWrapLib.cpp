@@ -186,18 +186,6 @@ BOOL ZipExtractCurrentFile(unzFile uf, LPCSTR lpszDestFolderA)
 
     for (int i = 0; i < 256; ++i)
     {
-        if (szFilePathA[i] == '\\' || szFilePathA[i] == '/')
-        {
-            szFilePathA[i] = '\0';
-
-            strDestPathA += lpszFileNameA;
-            strDestPathA += "\\";
-
-            CreateDirectoryA(strDestPathA, NULL);
-            
-            lpszFileNameA = szFilePathA + i + 1;
-        }
-
         if (szFilePathA[i] == _T('\0'))
         {
             if (lpszFileNameA[0] == _T('\0'))
@@ -209,6 +197,18 @@ BOOL ZipExtractCurrentFile(unzFile uf, LPCSTR lpszDestFolderA)
                 strDestPathA += lpszFileNameA;
                 break;
             }
+        }
+
+        if (szFilePathA[i] == '\\' || szFilePathA[i] == '/')
+        {
+            szFilePathA[i] = '\0';
+
+            strDestPathA += lpszFileNameA;
+            strDestPathA += "\\";
+
+            CreateDirectoryA(strDestPathA, NULL);
+            
+            lpszFileNameA = szFilePathA + i + 1;
         }
     }
 
