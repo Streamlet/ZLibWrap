@@ -31,12 +31,12 @@ CStringW ANSIToUCS2(const CStringA &strANSI, UINT uCodePage /*= CP_ACP*/)
 
     if (MultiByteToWideChar(uCodePage, 0, strANSI, -1, szUCS2, size) == 0)
     {
-        delete szUCS2;
+        delete[] szUCS2;
         return L"";
     }
 
     CStringW ret = szUCS2;
-    delete szUCS2;
+    delete[] szUCS2;
 
     return ret;
 }
@@ -54,12 +54,12 @@ CStringA UCS2ToANSI(const CStringW &strUCS2, UINT uCodePage /*= CP_ACP*/)
 
     if (WideCharToMultiByte(uCodePage, 0, strUCS2, -1, szANSI, size, NULL, NULL) == 0)
     {
-        delete szANSI;
+        delete[] szANSI;
         return "";
     }
 
     CStringA ret = szANSI;
-    delete szANSI;
+    delete[] szANSI;
 
     return ret;
 }
