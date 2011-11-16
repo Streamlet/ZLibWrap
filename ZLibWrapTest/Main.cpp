@@ -28,7 +28,7 @@ void ShowBanner()
 void ShowHelp()
 {
     _tprintf(_T("Usage:\n"));
-    _tprintf(_T("    ZLibWrapTest /z <SourceFiles> <ZipFile>\n"));
+    _tprintf(_T("    ZLibWrapTest /z <SourceFiles> <ZipFile> [/utf8]\n"));
     _tprintf(_T("    ZLibWrapTest /u <ZipFile> <DestFolder>\n"));
 }
 
@@ -38,7 +38,7 @@ int _tmain(int argc, TCHAR *argv[])
 
     ShowBanner();
 
-    if (argc != 4)
+    if (argc < 4)
     {
         ShowHelp();
         return 0;
@@ -51,13 +51,18 @@ int _tmain(int argc, TCHAR *argv[])
 
     } TODO;
 
-    if (_tcscmp(argv[1], _T("/z")) == 0 ||
-        _tcscmp(argv[1], _T("/Z")) == 0)
+    bool bUtf8 = false;
+
+    if (_tcsicmp(argv[1], _T("/z")) == 0)
     {
         TODO = ZIP;
+
+        if (argc >= 5 && _tcsicmp(argv[4], _T("/utf8")) == 0)
+        {
+            bUtf8 = true;
+        }
     }
-    else if (_tcscmp(argv[1], _T("/u")) == 0 ||
-             _tcscmp(argv[1], _T("/U")) == 0)
+    else if (_tcsicmp(argv[1], _T("/u")) == 0)
     {
         TODO = UNZIP;
     }
@@ -70,7 +75,7 @@ int _tmain(int argc, TCHAR *argv[])
     switch (TODO)
     {
     case ZIP:
-        if (ZWZipCompress(argv[2], argv[3]))
+        if (ZWZipCompress(argv[2], argv[3], bUtf8))
         {
             _tprintf(_T("Compressed %s to %s successfully.\n"), argv[2], argv[3]);
         }

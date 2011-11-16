@@ -18,9 +18,9 @@
 #include "ZLibWrap.h"
 #include "../ZLibWrapLib/ZLibWrapLib.h"
 
-BOOL ZWZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile)
+BOOL ZWZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 /*= false*/)
 {
-    return ZipCompress(lpszSourceFiles, lpszDestFile);
+    return ZipCompress(lpszSourceFiles, lpszDestFile, bUtf8);
 }
 
 BOOL ZWZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder)

@@ -23,9 +23,10 @@
 // Description: Compress files to a ZIP file.
 // Parameter: lpszSourceFiles Source files, supporting wildcards.
 // Parameter: lpszDestFile The ZIP file path.
+// Parameter: bUtf8 If using UTF-8 to encode the file name.
 // Return Value: TRUE/FALSE.
 //------------------------------------------------------------------------------
-BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile);
+BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 = false);
 
 //------------------------------------------------------------------------------
 // Description: Extract files from a ZIP file.

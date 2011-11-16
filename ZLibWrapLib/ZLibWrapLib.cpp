@@ -22,11 +22,12 @@
 #include "ZLib/unzip.h"
 #include <atlstr.h>
 
+#define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
 
-BOOL ZipAddFile(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFilePath)
+BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, bool bUtf8 = false)
 {
-    DWORD dwAttr = (GetFileAttributesA(lpszFilePath) & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
-    HANDLE hFile = CreateFileA(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwAttr, NULL);
+    DWORD dwAttr = (GetFileAttributes(lpszFilePath) & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
+    HANDLE hFile = CreateFile(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwAttr, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -47,10 +48,25 @@ BOOL ZipAddFile(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFilePath)
     ZeroMemory(&FileInfo, sizeof(FileInfo));
 
     FileInfo.dosDate = ((((DWORD)wDate) << 16) | (DWORD)wTime);
-    
-    if (zipOpenNewFileInZip(zf, lpszFileNameInZip, &FileInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 9) != ZIP_OK)
+
+    if (bUtf8)
     {
-        return FALSE;
+        CStringA strFileNameInZipA = UCS2ToANSI(lpszFileNameInZip, CP_UTF8);
+
+        if (zipOpenNewFileInZip4(zf, strFileNameInZipA, &FileInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 9,
+                                 0, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, NULL, 0, 0, ZIP_GPBF_LANGUAGE_ENCODING_FLAG) != ZIP_OK)
+        {
+            return FALSE;
+        }
+    }
+    else
+    {
+        CStringA strFileNameInZipA = UCS2ToANSI(lpszFileNameInZip);
+
+        if (zipOpenNewFileInZip(zf, strFileNameInZipA, &FileInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, 9) != ZIP_OK)
+        {
+            return FALSE;
+        }
     }
 
     LOKI_ON_BLOCK_EXIT(zipCloseFileInZip, zf);
@@ -86,12 +102,12 @@ BOOL ZipAddFile(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFilePath)
     return TRUE;
 }
 
-BOOL ZipAddFiles(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFiles)
+BOOL ZipAddFiles(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFiles, bool bUtf8 = false)
 {
-    WIN32_FIND_DATAA wfd;
+    WIN32_FIND_DATA wfd;
     ZeroMemory(&wfd, sizeof(wfd));
 
-    HANDLE hFind = FindFirstFileA(lpszFiles, &wfd);
+    HANDLE hFind = FindFirstFile(lpszFiles, &wfd);
 
     if (hFind == INVALID_HANDLE_VALUE)
     {
@@ -100,60 +116,59 @@ BOOL ZipAddFiles(zipFile zf, LPCSTR lpszFileNameInZip, LPCSTR lpszFiles)
 
     LOKI_ON_BLOCK_EXIT(FindClose, hFind);
 
-    CStringA strFilePathA = lpszFiles;
-    int nPos = strFilePathA.ReverseFind('\\');
+    CString strFilePath = lpszFiles;
+    int nPos = strFilePath.ReverseFind('\\');
 
     if (nPos != -1)
     {
-        strFilePathA = strFilePathA.Left(nPos + 1);
+        strFilePath = strFilePath.Left(nPos + 1);
     }
     else
     {
-        strFilePathA.Empty();
+        strFilePath.Empty();
     }
 
-    CStringA strFileNameInZipA = lpszFileNameInZip;
+    CString strFileNameInZip = lpszFileNameInZip;
     
     do 
     {
-        CStringA strFileNameA = wfd.cFileName;
+        CString strFileName = wfd.cFileName;
 
-        if (strFileNameA == "." || strFileNameA == "..")
+        if (strFileName == _T(".") || strFileName == _T(".."))
         {
             continue;
         }
 
         if ((wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
         {
-            if (!ZipAddFile(zf, strFileNameInZipA + strFileNameA + "/", strFilePathA + strFileNameA))
+            if (!ZipAddFile(zf, strFileNameInZip + strFileName + _T("/"), strFilePath + strFileName, bUtf8))
             {
                 return FALSE;
             }
 
-            if (!ZipAddFiles(zf, strFileNameInZipA + strFileNameA + "/", strFilePathA + strFileNameA + "\\*"))
+            if (!ZipAddFiles(zf, strFileNameInZip + strFileName + _T("/"), strFilePath + strFileName + _T("\\*"), bUtf8))
             {
                 return FALSE;
             }
         }
         else
         {
-            if (!ZipAddFile(zf, strFileNameInZipA + strFileNameA, strFilePathA + strFileNameA))
+            if (!ZipAddFile(zf, strFileNameInZip + strFileName, strFilePath + strFileName, bUtf8))
             {
                 return FALSE;
             }
         }
 
-    } while (FindNextFileA(hFind, &wfd));
+    } while (FindNextFile(hFind, &wfd));
 
     return TRUE;
 }
 
-BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile)
+BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 /*= false*/)
 {
-    CStringA strSourceFilesA = UCS2ToANSI(lpszSourceFiles);
-    CStringA strDestFiles = UCS2ToANSI(lpszDestFile);
+    CStringA strDestFile = UCS2ToANSI(lpszDestFile);
 
-    zipFile zf = zipOpen64(strDestFiles, 0);
+    zipFile zf = zipOpen64(strDestFile, 0);
 
     if (zf == NULL)
     {
@@ -162,7 +177,7 @@ BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile)
 
     LOKI_ON_BLOCK_EXIT(zipClose, zf, (const char *)NULL);
 
-    if (!ZipAddFiles(zf, "", strSourceFilesA))
+    if (!ZipAddFiles(zf, _T(""), lpszSourceFiles, bUtf8))
     {
         return FALSE;
     }
@@ -170,9 +185,9 @@ BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile)
     return TRUE;
 }
 
-BOOL ZipExtractCurrentFile(unzFile uf, LPCSTR lpszDestFolderA)
+BOOL ZipExtractCurrentFile(unzFile uf, LPCTSTR lpszDestFolder)
 {
-    char szFilePathA[256];
+    char szFilePathA[MAX_PATH];
     unz_file_info64 FileInfo;
 
     if (unzGetCurrentFileInfo64(uf, &FileInfo, szFilePathA, sizeof(szFilePathA), NULL, 0, NULL, 0) != UNZ_OK)
@@ -187,38 +202,50 @@ BOOL ZipExtractCurrentFile(unzFile uf, LPCSTR lpszDestFolderA)
     
     LOKI_ON_BLOCK_EXIT(unzCloseCurrentFile, uf);
 
-    CStringA strDestPathA = lpszDestFolderA;
-    LPCSTR lpszFileNameA = szFilePathA;
+    CString strDestPath = lpszDestFolder;
+    CString strFileName;
 
-    for (int i = 0; i < 256; ++i)
+    if ((FileInfo.flag & ZIP_GPBF_LANGUAGE_ENCODING_FLAG) != 0)
     {
-        if (szFilePathA[i] == _T('\0'))
+        strFileName = ANSIToUCS2(szFilePathA, CP_UTF8);
+    }
+    else
+    {
+        strFileName = ANSIToUCS2(szFilePathA);
+    }
+
+    int nLength = strFileName.GetLength();
+    LPTSTR lpszFileName = strFileName.GetBuffer();
+    LPTSTR lpszCurrentFile = lpszFileName;
+    LOKI_ON_BLOCK_EXIT_OBJ(strFileName, &CString::ReleaseBuffer, -1);
+
+    for (int i = 0; i <= nLength; ++i)
+    {
+        if (lpszFileName[i] == _T('\0'))
         {
-            if (lpszFileNameA[0] == _T('\0'))
-            {
-                return TRUE;
-            }
-            else
-            {
-                strDestPathA += lpszFileNameA;
-                break;
-            }
+            strDestPath += lpszCurrentFile;
+            break;
         }
 
-        if (szFilePathA[i] == '\\' || szFilePathA[i] == '/')
+        if (lpszFileName[i] == '\\' || lpszFileName[i] == '/')
         {
-            szFilePathA[i] = '\0';
+            lpszFileName[i] = '\0';
 
-            strDestPathA += lpszFileNameA;
-            strDestPathA += "\\";
+            strDestPath += lpszCurrentFile;
+            strDestPath += _T("\\");
 
-            CreateDirectoryA(strDestPathA, NULL);
+            CreateDirectory(strDestPath, NULL);
             
-            lpszFileNameA = szFilePathA + i + 1;
+            lpszCurrentFile = lpszFileName + i + 1;
         }
     }
 
-    HANDLE hFile = CreateFileA(strDestPathA, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+    if (lpszCurrentFile[0] == _T('\0'))
+    {
+        return TRUE;
+    }
+
+    HANDLE hFile = CreateFile(strDestPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -265,7 +292,6 @@ BOOL ZipExtractCurrentFile(unzFile uf, LPCSTR lpszDestFolderA)
 BOOL ZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder)
 {
     CStringA strSourceFileA = UCS2ToANSI(lpszSourceFile);
-    CStringA strDestFolderA = UCS2ToANSI(lpszDestFolder);
 
     unzFile uf = unzOpen64(strSourceFileA);
 
@@ -283,16 +309,18 @@ BOOL ZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder)
         return FALSE;
     }
 
+    CString strDestFolder = lpszDestFolder;
+
     CreateDirectory(lpszDestFolder, NULL);
 
-    if (!strDestFolderA.IsEmpty() && strDestFolderA[strDestFolderA.GetLength() - 1] != '\\')
+    if (!strDestFolder.IsEmpty() && strDestFolder[strDestFolder.GetLength() - 1] != _T('\\'))
     {
-        strDestFolderA += _T("\\");
+        strDestFolder += _T("\\");
     }
     
     for (int i = 0; i < gi.number_entry; ++i)
     {
-        if (!ZipExtractCurrentFile(uf, strDestFolderA))
+        if (!ZipExtractCurrentFile(uf, strDestFolder))
         {
             return FALSE;
         }
