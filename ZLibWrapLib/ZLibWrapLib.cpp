@@ -26,8 +26,15 @@
 
 BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, bool bUtf8 = false)
 {
-    DWORD dwAttr = (GetFileAttributes(lpszFilePath) & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
-    HANDLE hFile = CreateFile(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwAttr, NULL);
+    DWORD dwFileAttr = GetFileAttributes(lpszFilePath);
+
+    if (dwFileAttr == INVALID_FILE_ATTRIBUTES)
+    {
+        return false;
+    }
+
+    DWORD dwOpenAttr = (dwFileAttr & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
+    HANDLE hFile = CreateFile(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwOpenAttr, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -48,6 +55,7 @@ BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, boo
     ZeroMemory(&FileInfo, sizeof(FileInfo));
 
     FileInfo.dosDate = ((((DWORD)wDate) << 16) | (DWORD)wTime);
+    FileInfo.external_fa |= dwFileAttr;
 
     if (bUtf8)
     {
