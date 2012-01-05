@@ -17,19 +17,19 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <locale.h>
-#include "../ZLibWrap/ZLibWrap.h"
+#include "../ZLibWrapLib/ZLibWrapLib.h"
 
 void ShowBanner()
 {
-    _tprintf(_T("ZLibWrapTest  By Streamlet\n"));
+    _tprintf(_T("xlZip By Streamlet\n"));
     _tprintf(_T("\n"));
 }
 
 void ShowHelp()
 {
     _tprintf(_T("Usage:\n"));
-    _tprintf(_T("    ZLibWrapTest /z <SourceFiles> <ZipFile> [/utf8]\n"));
-    _tprintf(_T("    ZLibWrapTest /u <ZipFile> <DestFolder>\n"));
+    _tprintf(_T("    xlZip /z <SourceFiles> <ZipFile> [/utf8]\n"));
+    _tprintf(_T("    xlZip /u <ZipFile> <DestFolder>\n"));
 }
 
 int _tmain(int argc, TCHAR *argv[])
@@ -75,7 +75,7 @@ int _tmain(int argc, TCHAR *argv[])
     switch (TODO)
     {
     case ZIP:
-        if (ZWZipCompress(argv[2], argv[3], bUtf8))
+        if (ZipCompress(argv[2], argv[3], bUtf8))
         {
             _tprintf(_T("Compressed %s to %s successfully.\n"), argv[2], argv[3]);
         }
@@ -85,7 +85,7 @@ int _tmain(int argc, TCHAR *argv[])
         }
         break;
     case UNZIP:
-        if (ZWZipExtract(argv[2], argv[3]))
+        if (ZipExtract(argv[2], argv[3]))
         {
             _tprintf(_T("Extracted %s to %s successfully.\n"), argv[2], argv[3]);
         }
