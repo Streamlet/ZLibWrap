@@ -79,6 +79,11 @@ BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, boo
 
     LOKI_ON_BLOCK_EXIT(zipCloseFileInZip, zf);
 
+    if ((dwFileAttr & FILE_ATTRIBUTE_DIRECTORY) != 0)
+    {
+        return TRUE;
+    }
+
     const DWORD BUFFER_SIZE = 4096;
     BYTE byBuffer[BUFFER_SIZE];
 
