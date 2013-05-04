@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZLibWrapLib", "ZLibWrapLib\ZLibWrapLib.vcxproj", "{5165F5BD-8224-4145-8D45-324968D4F2B0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZLibWrap", "ZLibWrap\ZLibWrap.vcxproj", "{E496B08E-BC62-461F-A503-0E1BBF8B1992}"
