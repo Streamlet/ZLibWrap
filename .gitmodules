@@ -1,0 +1,9 @@
+[submodule "VSProps"]
+	path = VSProps
+	url = https://github.com/Streamlet/VSProps.git
+[submodule "External/loki"]
+	path = External/loki
+	url = https://github.com/Streamlet/loki.git
+[submodule "External/zlib"]
+	path = External/zlib
+	url = https://github.com/Streamlet/zlib.git

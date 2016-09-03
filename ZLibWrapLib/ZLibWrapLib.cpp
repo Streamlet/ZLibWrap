@@ -17,9 +17,9 @@
 #include "stdafx.h"
 #include "ZLibWrapLib.h"
 #include "Encoding.h"
-#include "Loki/ScopeGuard.h"
-#include "ZLib/zip.h"
-#include "ZLib/unzip.h"
+#include <loki/ScopeGuard.h>
+#include <minizip/zip.h>
+#include <minizip/unzip.h>
 #include <atlstr.h>
 
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
