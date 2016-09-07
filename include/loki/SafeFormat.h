@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2005 by Andrei Alexandrescu
-// Copyright (c) 2006 Peter Kümmel
+// Copyright (c) 2006 Peter Kï¿½mmel
 // Permission to use, copy, modify, distribute, and sell this software for any
 //     purpose is hereby granted without fee, provided that the above copyright
 //     notice appear in all copies and that both that copyright notice and this
@@ -31,7 +31,7 @@
 #include <locale>
 #include <iostream>
 
-#include <loki/LokiExport.h>
+#include "LokiExport.h"
 
 
 // long is 32 bit on 64-bit Windows!

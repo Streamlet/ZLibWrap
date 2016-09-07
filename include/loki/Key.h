@@ -23,7 +23,7 @@
 // $Id: Key.h 771 2006-10-27 18:05:03Z clitte_bbt $
 
 
-#include <loki/Factory.h>
+#include "Factory.h"
 
 namespace Loki
 {

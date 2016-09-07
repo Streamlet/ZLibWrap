@@ -29,7 +29,7 @@
 #include <iterator>
 #include <map>
 #include <cassert>
-#include <loki/Key.h>
+#include "Key.h"
 
 #ifdef DO_EXTRA_LOKI_TESTS
 	#define D( x ) x

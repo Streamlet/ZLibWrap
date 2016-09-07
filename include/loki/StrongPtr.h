@@ -17,9 +17,9 @@
 // $Id: StrongPtr.h 914 2008-12-19 00:39:29Z rich_sposato $
 
 
-#include <loki/SmartPtr.h>
+#include "SmartPtr.h"
 #if defined (LOKI_OBJECT_LEVEL_THREADING) || defined (LOKI_CLASS_LEVEL_THREADING)
-    #include <loki/Threads.h>
+    #include "Threads.h"
 #endif
 
 

@@ -18,7 +18,7 @@
 
 // Requires project to be compiled with loki/src/SmallObj.cpp and loki/src/Singleton.cpp
 
-#include <loki/SmallObj.h>
+#include "SmallObj.h"
 
 
 namespace Loki

@@ -35,9 +35,9 @@
  * SmartPointer a new CachedFactory encapsulation policy.
  */
 
-#include <loki/Functor.h>
-#include <loki/SmartPtr.h>
-#include <loki/CachedFactory.h>
+#include "Functor.h"
+#include "SmartPtr.h"
+#include "CachedFactory.h"
 
 namespace Loki
 {

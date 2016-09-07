@@ -20,7 +20,7 @@
 
 #include <cstdlib>
 #include <assert.h>
-#include <loki/static_check.h>
+#include "static_check.h"
 
 
 namespace Loki

@@ -2,7 +2,7 @@
 // The Loki Library
 // Copyright (c) 2001 by Andrei Alexandrescu
 // This code is from the article:
-//     "Generic<Programming>: volatile — Multithreaded Programmer’s Best Friend
+//     "Generic<Programming>: volatile ï¿½ Multithreaded Programmerï¿½s Best Friend
 //     Volatile-Correctness or How to Have Your Compiler Detect Race Conditions
 //     for You" by Alexandrescu, Andrei.
 //     Published in the February 2001 issue of the C/C++ Users Journal.
@@ -22,8 +22,8 @@
 // $Id: LockingPtr.h 840 2008-03-19 19:44:38Z rich_sposato $
 
 
-#include <loki/ConstPolicy.h>
-#include <loki/Threads.h>
+#include "ConstPolicy.h"
+#include "Threads.h"
 
 
 namespace Loki
