@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Loki">
-      <UniqueIdentifier>{faa497df-fd73-446c-9f94-ed91285c73fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ZLib">
       <UniqueIdentifier>{8c1c4566-03f7-4186-ae11-326f9efb8c40}</UniqueIdentifier>
     </Filter>
