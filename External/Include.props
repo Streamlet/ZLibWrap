@@ -3,6 +3,6 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(SolutionDir)External\loki\Include;$(SolutionDir)External\zlib;$(SolutionDir)External\zlib\contrib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)External\Loki\Include;$(SolutionDir)External\zlib;$(SolutionDir)External\zlib\contrib;$(IncludePath)</IncludePath>
   </PropertyGroup>
 </Project>
