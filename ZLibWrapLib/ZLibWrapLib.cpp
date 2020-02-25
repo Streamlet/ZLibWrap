@@ -164,7 +164,7 @@ BOOL ZipAddFiles(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFiles, bool 
         CStringW wstrFileName(wfd.cFileName);
         CString strFileName = UCS2ToANSI(wstrFileName);
 
-        if (strFileName == _T(".") || strFileName == _T(".."))
+        if (strFileName.IsEmpty() || strFileName == _T(".") || strFileName == _T(".."))
         {
             continue;
         }
