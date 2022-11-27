@@ -26,8 +26,7 @@
 
 BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, bool bUtf8 = false)
 {
-    CString strFilePathUNC = CString(LR"(\\?\)") + lpszFileNameInZip;
-    DWORD dwFileAttr = GetFileAttributes(strFilePathUNC);
+    DWORD dwFileAttr = GetFileAttributes(lpszFilePath);
 
     if (dwFileAttr == INVALID_FILE_ATTRIBUTES)
     {
@@ -35,7 +34,7 @@ BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, boo
     }
 
     DWORD dwOpenAttr = (dwFileAttr & FILE_ATTRIBUTE_DIRECTORY) != 0 ? FILE_FLAG_BACKUP_SEMANTICS : 0;
-    HANDLE hFile = CreateFile(strFilePathUNC, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwOpenAttr, NULL);
+    HANDLE hFile = CreateFile(lpszFilePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, dwOpenAttr, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
@@ -118,11 +117,10 @@ BOOL ZipAddFile(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFilePath, boo
 
 BOOL ZipAddFiles(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFiles, bool bUtf8 = false)
 {
-    WIN32_FIND_DATAW wfd;
+    WIN32_FIND_DATA wfd;
     ZeroMemory(&wfd, sizeof(wfd));
 
-    CString strFilesUNC = CString(LR"(\\?\)") + lpszFiles;
-    HANDLE hFind = FindFirstFileW(strFilesUNC, &wfd);
+    HANDLE hFind = FindFirstFile(lpszFiles, &wfd);
 
     if (hFind == INVALID_HANDLE_VALUE)
     {
@@ -147,9 +145,9 @@ BOOL ZipAddFiles(zipFile zf, LPCTSTR lpszFileNameInZip, LPCTSTR lpszFiles, bool 
     
     do 
     {
-        CString strFileName = UCS2ToANSI(wfd.cFileName);
+        CString strFileName = wfd.cFileName;
 
-        if (strFileName.IsEmpty() || strFileName == _T(".") || strFileName == _T(".."))
+        if (strFileName == _T(".") || strFileName == _T(".."))
         {
             continue;
         }
@@ -260,9 +258,7 @@ BOOL ZipExtractCurrentFile(unzFile uf, LPCTSTR lpszDestFolder)
         return TRUE;
     }
 
-    CString strDestPathUNC = CString(LR"(\\?\)") + strDestPath;
-    SetFileAttributesW(strDestPathUNC, FILE_ATTRIBUTE_NORMAL);
-    HANDLE hFile = CreateFileW(strDestPathUNC, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+    HANDLE hFile = CreateFile(strDestPath, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
