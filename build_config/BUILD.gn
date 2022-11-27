@@ -1,0 +1,21 @@
+config("project_common") {
+  if (is_win) {
+    cflags_c = [ "/std:c17" ]
+    cflags_cc = [ "/std:c++17" ]
+  } else {
+    cflags_c = [ "-std=c17" ]
+    cflags_cc = [ "-std=c++17" ]
+  }
+  defines = [
+  ]
+  if (is_win) {
+    defines += [
+      "_WIN32_WINNT=0x0501",
+      "_WIN32_WINDOWS=0x0501",
+    ]
+  }
+  include_dirs = [
+    "//src",
+    "//thirdparty/loki/include",
+  ]
+}

@@ -1,0 +1,8 @@
+executable("xlZip") {
+  configs += [ "//build_config:project_common" ]
+  if (is_win) {
+    configs += [ "//build/config/win:static_runtime" ]
+  }
+  sources = [ "//src/xlZip/Main.cpp" ]
+  deps = [ "//src/ZLibWrapLib" ]
+}

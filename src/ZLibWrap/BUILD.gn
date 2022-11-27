@@ -1,0 +1,14 @@
+shared_library("ZLibWrap") {
+  configs += [ "//build_config:project_common" ]
+  if (is_win) {
+    configs += [ "//build/config/win:static_runtime" ]
+  }
+  sources = [
+    "//src/ZLibWrap/ZLibWrap.cpp",
+    "//src/ZLibWrap/ZLibWrap.def",
+    "//src/ZLibWrap/ZLibWrap.h",
+    "//src/ZLibWrap/ZLibWrap.rc",
+    "//src/ZLibWrap/dllmain.cpp",
+  ]
+  deps = [ "//src/ZLibWrapLib" ]
+}

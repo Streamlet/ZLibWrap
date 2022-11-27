@@ -1,0 +1,14 @@
+static_library("ZLibWrapLib") {
+  configs += [ "//build_config:project_common" ]
+  sources = [
+    "//src/ZLibWrapLib/Encoding.cpp",
+    "//src/ZLibWrapLib/Encoding.h",
+    "//src/ZLibWrapLib/ZLibWrapLib.cpp",
+    "//src/ZLibWrapLib/ZLibWrapLib.h",
+  ]
+  include_dirs = [
+    "//thirdparty/zlib/contrib",
+    "//thirdparty/zlib",
+  ]
+  deps = [ "//thirdparty:minizip" ]
+}

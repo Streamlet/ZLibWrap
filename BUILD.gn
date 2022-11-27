@@ -1,0 +1,7 @@
+group("all") {
+    deps = [
+        "//src/ZLibWrapLib",
+        "//src/ZLibWrap",
+        "//src/xlZip",
+    ]
+}

@@ -1,0 +1,58 @@
+source_set("zlib") {
+  configs += [ "//build_config:project_common" ]
+  if (is_win) {
+    configs += [ "//build/config/win:static_runtime" ]
+  }
+  sources = [
+    "zlib/adler32.c",
+    "zlib/compress.c",
+    "zlib/crc32.c",
+    "zlib/crc32.h",
+    "zlib/deflate.c",
+    "zlib/deflate.h",
+    "zlib/gzclose.c",
+    "zlib/gzguts.h",
+    "zlib/gzlib.c",
+    "zlib/gzread.c",
+    "zlib/gzwrite.c",
+    "zlib/infback.c",
+    "zlib/inffast.c",
+    "zlib/inffast.h",
+    "zlib/inffixed.h",
+    "zlib/inflate.c",
+    "zlib/inflate.h",
+    "zlib/inftrees.c",
+    "zlib/inftrees.h",
+    "zlib/trees.c",
+    "zlib/trees.h",
+    "zlib/uncompr.c",
+    "zlib/zconf.h",
+    "zlib/zlib.h",
+    "zlib/zutil.c",
+    "zlib/zutil.h",
+  ]
+  defines = [ "WINAPI_FAMILY=100" ]
+}
+
+source_set("minizip") {
+  configs += [ "//build_config:project_common" ]
+  if (is_win) {
+    configs += [ "//build/config/win:static_runtime" ]
+  }
+  sources = [
+    "zlib/contrib/minizip/crypt.h",
+    "zlib/contrib/minizip/ioapi.c",
+    "zlib/contrib/minizip/ioapi.h",
+    "zlib/contrib/minizip/iowin32.c",
+    "zlib/contrib/minizip/iowin32.h",
+    "zlib/contrib/minizip/mztools.c",
+    "zlib/contrib/minizip/mztools.h",
+    "zlib/contrib/minizip/unzip.c",
+    "zlib/contrib/minizip/unzip.h",
+    "zlib/contrib/minizip/zip.c",
+    "zlib/contrib/minizip/zip.h",
+  ]
+  defines = [ "WINAPI_FAMILY=100" ]
+  include_dirs = [ "//thirdparty/zlib" ]
+  deps = [ ":zlib" ]
+}
