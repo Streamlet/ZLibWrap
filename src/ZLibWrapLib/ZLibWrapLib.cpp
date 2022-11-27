@@ -15,6 +15,7 @@
 
 #include "ZLibWrapLib.h"
 #include "encoding.h"
+#include "system_util.h"
 #include <loki/ScopeGuard.h>
 #include <minizip/unzip.h>
 #include <minizip/zip.h>
@@ -98,17 +99,6 @@ bool ZipAddFile(zipFile zf, const char *lpszFileNameInZip, const char *lpszFileP
 }
 
 BOOL ZipAddFiles(zipFile zf, const char *lpszFileNameInZip, const char *lpszFiles, bool bUtf8 = false) {
-  WIN32_FIND_DATAA wfd;
-  ZeroMemory(&wfd, sizeof(wfd));
-
-  HANDLE hFind = FindFirstFileA(lpszFiles, &wfd);
-
-  if (hFind == INVALID_HANDLE_VALUE) {
-    return FALSE;
-  }
-
-  LOKI_ON_BLOCK_EXIT(FindClose, hFind);
-
   std::string strFilePath = lpszFiles;
   size_t nPos = strFilePath.find_last_of('\\');
 
@@ -117,34 +107,29 @@ BOOL ZipAddFiles(zipFile zf, const char *lpszFileNameInZip, const char *lpszFile
   } else {
     strFilePath.clear();
   }
-
   std::string strFileNameInZip = lpszFileNameInZip;
 
-  do {
-    std::string strFileName = wfd.cFileName;
-
+  return system_util::FindFile(lpszFiles, [&](const char *name, bool dir) {
+    std::string strFileName = name;
     if (strFileName == "." || strFileName == "..") {
-      continue;
+      return;
     }
 
-    if ((wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+    if (dir) {
       if (!ZipAddFile(zf, (strFileNameInZip + strFileName + "/").c_str(), (strFilePath + strFileName).c_str(), bUtf8)) {
-        return FALSE;
+        return;
       }
 
       if (!ZipAddFiles(zf, (strFileNameInZip + strFileName + "/").c_str(), (strFilePath + strFileName + "\\*").c_str(),
                        bUtf8)) {
-        return FALSE;
+        return;
       }
     } else {
       if (!ZipAddFile(zf, (strFileNameInZip + strFileName).c_str(), (strFilePath + strFileName).c_str(), bUtf8)) {
-        return FALSE;
+        return;
       }
     }
-
-  } while (FindNextFileA(hFind, &wfd));
-
-  return TRUE;
+  });
 }
 
 bool ZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 /*= false*/) {

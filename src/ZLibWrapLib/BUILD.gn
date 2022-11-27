@@ -5,6 +5,8 @@ static_library("ZLibWrapLib") {
     "//src/ZLibWrapLib/ZLibWrapLib.h",
     "//src/ZLibWrapLib/encoding.h",
     "//src/ZLibWrapLib/encoding_win.cc",
+    "//src/ZLibWrapLib/system_util.h",
+    "//src/ZLibWrapLib/system_util_win.cc",
   ]
   include_dirs = [
     "//thirdparty/zlib/contrib",
