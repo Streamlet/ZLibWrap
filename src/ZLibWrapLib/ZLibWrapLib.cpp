@@ -113,7 +113,7 @@ BOOL ZipAddFiles(zipFile zf, const char *lpszFileNameInZip, const char *lpszFile
   size_t nPos = strFilePath.find_last_of('\\');
 
   if (nPos != std::wstring::npos) {
-    strFilePath = strFilePath.substr(nPos + 1);
+    strFilePath = strFilePath.substr(0, nPos + 1);
   } else {
     strFilePath.clear();
   }
