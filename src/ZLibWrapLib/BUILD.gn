@@ -1,10 +1,10 @@
 static_library("ZLibWrapLib") {
   configs += [ "//build_config:project_common" ]
   sources = [
-    "//src/ZLibWrapLib/encoding_win.cc",
-    "//src/ZLibWrapLib/encoding.h",
     "//src/ZLibWrapLib/ZLibWrapLib.cpp",
     "//src/ZLibWrapLib/ZLibWrapLib.h",
+    "//src/ZLibWrapLib/encoding.h",
+    "//src/ZLibWrapLib/encoding_win.cc",
   ]
   include_dirs = [
     "//thirdparty/zlib/contrib",

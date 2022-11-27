@@ -5,10 +5,8 @@ shared_library("ZLibWrap") {
   }
   sources = [
     "//src/ZLibWrap/ZLibWrap.cpp",
-    "//src/ZLibWrap/ZLibWrap.def",
     "//src/ZLibWrap/ZLibWrap.h",
     "//src/ZLibWrap/ZLibWrap.rc",
-    "//src/ZLibWrap/dllmain.cpp",
   ]
   defines = [ "ZLIBWRAP_EXPORTS" ]
   deps = [ "//src/ZLibWrapLib" ]

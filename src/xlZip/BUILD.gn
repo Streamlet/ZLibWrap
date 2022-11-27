@@ -4,5 +4,5 @@ executable("xlZip") {
     configs += [ "//build/config/win:static_runtime" ]
   }
   sources = [ "//src/xlZip/Main.cpp" ]
-  deps = [ "//src/ZLibWrapLib" ]
+  deps = [ "//src/ZLibWrap" ]
 }

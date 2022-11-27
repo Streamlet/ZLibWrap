@@ -1,0 +1,21 @@
+BasedOnStyle: LLVM
+
+ColumnLimit: 120
+
+# disable any short body on single line
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+
+# diable template related thins on single line with class
+AlwaysBreakTemplateDeclarations: Yes
+
+# others
+BinPackParameters: false
+ShortNamespaceLines: 0
+SortIncludes: CaseInsensitive
+AlignArrayOfStructures: Left

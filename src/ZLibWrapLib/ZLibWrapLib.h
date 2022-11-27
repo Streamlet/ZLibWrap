@@ -5,7 +5,7 @@
 //    File Name:   ZLibWrapLib.h
 //    Author:      Streamlet
 //    Create Time: 2010-09-14
-//    Description: 
+//    Description:
 //
 //    Version history:
 //
@@ -16,9 +16,6 @@
 #ifndef __ZLIBWRAPLIB_H_C9F256BA_4887_4C1C_A594_17452697B02B_INCLUDED__
 #define __ZLIBWRAPLIB_H_C9F256BA_4887_4C1C_A594_17452697B02B_INCLUDED__
 
-
-#include <Windows.h>
-
 //------------------------------------------------------------------------------
 // Description: Compress files to a ZIP file.
 // Parameter: lpszSourceFiles Source files, supporting wildcards.
@@ -26,7 +23,7 @@
 // Parameter: bUtf8 If using UTF-8 to encode the file name.
 // Return Value: TRUE/FALSE.
 //------------------------------------------------------------------------------
-BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 = false);
+bool ZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 = false);
 
 //------------------------------------------------------------------------------
 // Description: Extract files from a ZIP file.
@@ -35,6 +32,6 @@ BOOL ZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 = fal
 //                           specified folder MUST exist.
 // Return Value: TRUE/FALSE.
 //------------------------------------------------------------------------------
-BOOL ZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder);
+bool ZipExtract(const char *lpszSourceFile, const char *lpszDestFolder);
 
 #endif // #ifndef __ZLIBWRAPLIB_H_C9F256BA_4887_4C1C_A594_17452697B02B_INCLUDED__

@@ -5,7 +5,7 @@
 //    File Name:   Main.cpp
 //    Author:      Streamlet
 //    Create Time: 2010-09-14
-//    Description: 
+//    Description:
 //
 //    Version history:
 //
@@ -13,94 +13,71 @@
 //
 //------------------------------------------------------------------------------
 
-
-#include <stdio.h>
-#include <tchar.h>
+#include "../ZLibWrap/ZLibWrap.h"
+#include <cstring>
 #include <locale.h>
-#include "../ZLibWrapLib/ZLibWrapLib.h"
+#include <stdio.h>
 
-void ShowBanner()
-{
-    _tprintf(_T("xlZip By Streamlet\n"));
-    _tprintf(_T("\n"));
+void ShowBanner() {
+  printf("xlZip By Streamlet\n");
+  printf("\n");
 }
 
-void ShowHelp()
-{
-    _tprintf(_T("Usage:\n"));
-    _tprintf(_T("    xlZip /z <SourceFiles> <ZipFile> [/utf8]\n"));
-    _tprintf(_T("    xlZip /u <ZipFile> <DestFolder>\n"));
+void ShowHelp() {
+  printf("Usage:\n");
+  printf("    xlZip /z <SourceFiles> <ZipFile> [/utf8]\n");
+  printf("    xlZip /u <ZipFile> <DestFolder>\n");
 }
 
-int _tmain(int argc, TCHAR *argv[])
-{
-    setlocale(LC_ALL, "");
+int main(int argc, char *argv[]) {
+  setlocale(LC_ALL, "");
 
-    ShowBanner();
+  ShowBanner();
 
-    if (argc < 4)
-    {
-        ShowHelp();
-        return 0;
-    }
-
-    enum
-    {
-        ZIP,
-        UNZIP
-
-    } TODO;
-
-    bool bUtf8 = false;
-
-    if (_tcsicmp(argv[1], _T("/z")) == 0)
-    {
-        TODO = ZIP;
-
-        if (argc >= 5 && _tcsicmp(argv[4], _T("/utf8")) == 0)
-        {
-            bUtf8 = true;
-        }
-    }
-    else if (_tcsicmp(argv[1], _T("/u")) == 0)
-    {
-        TODO = UNZIP;
-    }
-    else
-    {
-        ShowHelp();
-        return 0;
-    }
-
-    switch (TODO)
-    {
-    case ZIP:
-        if (ZipCompress(argv[2], argv[3], bUtf8))
-        {
-            _tprintf(_T("Compressed %s to %s successfully.\n"), argv[2], argv[3]);
-        }
-        else
-        {
-            _tprintf(_T("Failed to compress %s to %s.\n"), argv[2], argv[3]);
-        }
-        break;
-    case UNZIP:
-        if (ZipExtract(argv[2], argv[3]))
-        {
-            _tprintf(_T("Extracted %s to %s successfully.\n"), argv[2], argv[3]);
-        }
-        else
-        {
-            _tprintf(_T("Failed to Extract %s to %s.\n"), argv[2], argv[3]);
-        }
-        break;
-    default:
-        break;
-    }
-
+  if (argc < 4) {
+    ShowHelp();
     return 0;
+  }
+
+  enum {
+    ZIP,
+    UNZIP
+
+  } TODO;
+
+  bool bUtf8 = false;
+
+  if (_stricmp(argv[1], "/z") == 0) {
+    TODO = ZIP;
+
+    if (argc >= 5 && _stricmp(argv[4], "/utf8") == 0) {
+      bUtf8 = true;
+    }
+  } else if (_stricmp(argv[1], "/u") == 0) {
+    TODO = UNZIP;
+  } else {
+    ShowHelp();
+    return 0;
+  }
+
+  switch (TODO) {
+  case ZIP:
+    if (ZWZipCompress(argv[2], argv[3], bUtf8)) {
+      printf("Compressed %s to %s successfully.\n", argv[2], argv[3]);
+    } else {
+      printf("Failed to compress %s to %s.\n", argv[2], argv[3]);
+    }
+    break;
+  case UNZIP:
+    if (ZWZipExtract(argv[2], argv[3])) {
+      printf("Extracted %s to %s successfully.\n", argv[2], argv[3]);
+    } else {
+      printf("Failed to Extract %s to %s.\n", argv[2], argv[3]);
+    }
+    break;
+  default:
+    break;
+  }
+
+  return 0;
 }
-
-
-
-

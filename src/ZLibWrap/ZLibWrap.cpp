@@ -5,7 +5,7 @@
 //    File Name:   ZLibWarp.cpp
 //    Author:      Streamlet
 //    Create Time: 2010-09-22
-//    Description: 
+//    Description:
 //
 //    Version history:
 //
@@ -13,17 +13,13 @@
 //
 //------------------------------------------------------------------------------
 
-
 #include "ZLibWrap.h"
 #include "../ZLibWrapLib/ZLibWrapLib.h"
 
-BOOL ZWZipCompress(LPCTSTR lpszSourceFiles, LPCTSTR lpszDestFile, bool bUtf8 /*= false*/)
-{
-    return ZipCompress(lpszSourceFiles, lpszDestFile, bUtf8);
+ZLIBWRAP_API bool ZWZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 /*= false*/) {
+  return ZipCompress(lpszSourceFiles, lpszDestFile, bUtf8);
 }
 
-BOOL ZWZipExtract(LPCTSTR lpszSourceFile, LPCTSTR lpszDestFolder)
-{
-    return ZipExtract(lpszSourceFile, lpszDestFolder);
+ZLIBWRAP_API bool ZWZipExtract(const char *lpszSourceFile, const char *lpszDestFolder) {
+  return ZipExtract(lpszSourceFile, lpszDestFolder);
 }
-
