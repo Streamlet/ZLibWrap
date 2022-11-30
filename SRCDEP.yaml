@@ -3,7 +3,7 @@
 
 DEPS:
   build:
-    GIT_REPOSITORY: https://github.com/Streamlet/gn_toolchain.git
+    GIT_REPO: https://github.com/Streamlet/gn_toolchain.git
     GIT_TAG: master
 
   thirdparty/loki:
