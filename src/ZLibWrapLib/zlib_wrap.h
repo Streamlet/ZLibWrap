@@ -2,7 +2,7 @@
 //
 //    Copyright (C) Streamlet. All rights reserved.
 //
-//    File Name:   ZLibWrapLib.h
+//    File Name:   zlib_wrap.h
 //    Author:      Streamlet
 //    Create Time: 2010-09-14
 //    Description:
@@ -18,20 +18,19 @@
 
 //------------------------------------------------------------------------------
 // Description: Compress files to a ZIP file.
-// Parameter: lpszSourceFiles Source files, supporting wildcards.
-// Parameter: lpszDestFile The ZIP file path.
-// Parameter: bUtf8 If using UTF-8 to encode the file name.
-// Return Value: TRUE/FALSE.
+// Parameter: pattern  Source files, supporting wildcards.
+// Parameter: zip_file The ZIP file path.
+// Return Value: true/false.
 //------------------------------------------------------------------------------
-bool ZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 = false);
+bool ZipCompress(const char *pattern, const char *zip_file);
 
 //------------------------------------------------------------------------------
 // Description: Extract files from a ZIP file.
-// Parameter: lpszSourceFile Source ZIP file.
-// Parameter: lpszDestFolder The folder to output files. The parent of the
-//                           specified folder MUST exist.
-// Return Value: TRUE/FALSE.
+// Parameter: zip_file Source ZIP file.
+// Parameter: dest_dir The directory to output files. The parent of the
+//                     specified folder MUST exist.
+// Return Value: true/false.
 //------------------------------------------------------------------------------
-bool ZipExtract(const char *lpszSourceFile, const char *lpszDestFolder);
+bool ZipExtract(const char *zip_file, const char *dest_dir);
 
 #endif // #ifndef __ZLIBWRAPLIB_H_C9F256BA_4887_4C1C_A594_17452697B02B_INCLUDED__

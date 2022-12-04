@@ -14,10 +14,10 @@
 //------------------------------------------------------------------------------
 
 #include "ZLibWrap.h"
-#include "../ZLibWrapLib/ZLibWrapLib.h"
+#include "../ZLibWrapLib/zlib_wrap.h"
 
-ZLIBWRAP_API bool ZWZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 /*= false*/) {
-  return ZipCompress(lpszSourceFiles, lpszDestFile, bUtf8);
+ZLIBWRAP_API bool ZWZipCompress(const char *lpszSourceFiles, const char *lpszDestFile) {
+  return ZipCompress(lpszSourceFiles, lpszDestFile);
 }
 
 ZLIBWRAP_API bool ZWZipExtract(const char *lpszSourceFile, const char *lpszDestFolder) {

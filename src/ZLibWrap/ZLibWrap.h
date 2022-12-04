@@ -29,7 +29,7 @@
 // Parameter: bUtf8 If using UTF-8 to encode the file name.
 // Return Value: true/false.
 //------------------------------------------------------------------------------
-ZLIBWRAP_API bool ZWZipCompress(const char *lpszSourceFiles, const char *lpszDestFile, bool bUtf8 = false);
+ZLIBWRAP_API bool ZWZipCompress(const char *lpszSourceFiles, const char *lpszDestFile);
 
 //------------------------------------------------------------------------------
 // Description: Extract files from a ZIP file.

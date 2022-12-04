@@ -1,13 +1,18 @@
 static_library("ZLibWrapLib") {
   configs += [ "//build_config:project_common" ]
   sources = [
-    "//src/ZLibWrapLib/ZLibWrapLib.cpp",
-    "//src/ZLibWrapLib/ZLibWrapLib.h",
     "//src/ZLibWrapLib/encoding.h",
-    "//src/ZLibWrapLib/encoding_win.cc",
-    "//src/ZLibWrapLib/system_util.h",
-    "//src/ZLibWrapLib/system_util_win.cc",
+    "//src/ZLibWrapLib/zlib_wrap.h",
   ]
+  if (is_win) {
+    sources += [
+      "//src/ZLibWrapLib/encoding_win.cc",
+      "//src/ZLibWrapLib/unzip_win.cc",
+      "//src/ZLibWrapLib/zip_win.cc",
+    ]
+  } else {
+    sources += []
+  }
   include_dirs = [
     "//thirdparty/zlib/contrib",
     "//thirdparty/zlib",

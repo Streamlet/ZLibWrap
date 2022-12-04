@@ -25,7 +25,7 @@ void ShowBanner() {
 
 void ShowHelp() {
   printf("Usage:\n");
-  printf("    xlZip /z <SourceFiles> <ZipFile> [/utf8]\n");
+  printf("    xlZip /z <SourceFiles> <ZipFile>\n");
   printf("    xlZip /u <ZipFile> <DestFolder>\n");
 }
 
@@ -49,10 +49,6 @@ int main(int argc, char *argv[]) {
 
   if (_stricmp(argv[1], "/z") == 0) {
     TODO = ZIP;
-
-    if (argc >= 5 && _stricmp(argv[4], "/utf8") == 0) {
-      bUtf8 = true;
-    }
   } else if (_stricmp(argv[1], "/u") == 0) {
     TODO = UNZIP;
   } else {
@@ -62,7 +58,7 @@ int main(int argc, char *argv[]) {
 
   switch (TODO) {
   case ZIP:
-    if (ZWZipCompress(argv[2], argv[3], bUtf8)) {
+    if (ZWZipCompress(argv[2], argv[3])) {
       printf("Compressed %s to %s successfully.\n", argv[2], argv[3]);
     } else {
       printf("Failed to compress %s to %s.\n", argv[2], argv[3]);
