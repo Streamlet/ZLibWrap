@@ -2,14 +2,12 @@ static_library("ZLibWrapLib") {
   configs += [ "//build_config:project_common" ]
   sources = [
     "//src/ZLibWrapLib/encoding.h",
+    "//src/ZLibWrapLib/unzip.cc",
+    "//src/ZLibWrapLib/zip.cc",
     "//src/ZLibWrapLib/zlib_wrap.h",
   ]
   if (is_win) {
-    sources += [
-      "//src/ZLibWrapLib/encoding_win.cc",
-      "//src/ZLibWrapLib/unzip_win.cc",
-      "//src/ZLibWrapLib/zip_win.cc",
-    ]
+    sources += [ "//src/ZLibWrapLib/encoding_win.cc" ]
   } else {
     sources += []
   }

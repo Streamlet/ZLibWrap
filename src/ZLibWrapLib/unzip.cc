@@ -3,21 +3,26 @@
 #include <loki/ScopeGuard.h>
 #include <minizip/unzip.h>
 #include <string>
-#include <time.h>
+#include <cstring>
+#include <ctime>
 #ifdef _DEBUG
 #include <stdio.h>
 #endif
 #ifdef _WIN32
 #include <direct.h>
-#include <sys/utime.h>
 #define mkdir(path) _mkdir(path)
+#include <sys/utime.h>
+#else
+#include <sys/stat.h>
+#define mkdir(path) mkdir(path, 0755)
+#include <utime.h>
 #endif
 
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
 
 bool ZipExtractCurrentFile(unzFile uf, const std::string &dest_dir) {
   std::string inner_path;
-  inner_path.resize(MAX_PATH);
+  inner_path.resize(260);
   unz_file_info64 file_info;
   if (unzGetCurrentFileInfo64(uf, &file_info, inner_path.data(), inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK) {
     return false;

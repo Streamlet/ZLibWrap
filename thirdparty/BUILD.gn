@@ -31,7 +31,9 @@ source_set("zlib") {
     "zlib/zutil.c",
     "zlib/zutil.h",
   ]
-  defines = [ "WINAPI_FAMILY=100" ]
+  if (is_win) {
+    defines = [ "WINAPI_FAMILY=100" ]
+  }
 }
 
 source_set("minizip") {
@@ -43,8 +45,6 @@ source_set("minizip") {
     "zlib/contrib/minizip/crypt.h",
     "zlib/contrib/minizip/ioapi.c",
     "zlib/contrib/minizip/ioapi.h",
-    "zlib/contrib/minizip/iowin32.c",
-    "zlib/contrib/minizip/iowin32.h",
     "zlib/contrib/minizip/mztools.c",
     "zlib/contrib/minizip/mztools.h",
     "zlib/contrib/minizip/unzip.c",
@@ -52,7 +52,13 @@ source_set("minizip") {
     "zlib/contrib/minizip/zip.c",
     "zlib/contrib/minizip/zip.h",
   ]
-  defines = [ "WINAPI_FAMILY=100" ]
+  if (is_win) {
+    sources += [
+      "zlib/contrib/minizip/iowin32.c",
+      "zlib/contrib/minizip/iowin32.h",
+    ]
+    defines = [ "WINAPI_FAMILY=100" ]
+  }
   include_dirs = [ "//thirdparty/zlib" ]
   deps = [ ":zlib" ]
 }

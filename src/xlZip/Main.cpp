@@ -47,9 +47,9 @@ int main(int argc, char *argv[]) {
 
   bool bUtf8 = false;
 
-  if (_stricmp(argv[1], "/z") == 0) {
+  if (strcmp(argv[1], "/z") == 0) {
     TODO = ZIP;
-  } else if (_stricmp(argv[1], "/u") == 0) {
+  } else if (strcmp(argv[1], "/u") == 0) {
     TODO = UNZIP;
   } else {
     ShowHelp();

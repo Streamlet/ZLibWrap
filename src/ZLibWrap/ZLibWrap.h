@@ -16,10 +16,18 @@
 #ifndef __ZLIBWRAP_H_7D43AEA4_8EFB_40CA_9823_A6C3D38CC01C_INCLUDED__
 #define __ZLIBWRAP_H_7D43AEA4_8EFB_40CA_9823_A6C3D38CC01C_INCLUDED__
 
+#ifdef _WIN32
 #ifdef ZLIBWRAP_EXPORTS
 #define ZLIBWRAP_API __declspec(dllexport)
 #else
 #define ZLIBWRAP_API __declspec(dllimport)
+#endif
+#else
+#ifdef ZLIBWRAP_EXPORTS
+#define ZLIBWRAP_API __attribute__((visibility("default")))
+#else
+#define ZLIBWRAP_API
+#endif
 #endif
 
 //------------------------------------------------------------------------------

@@ -6,8 +6,10 @@ shared_library("ZLibWrap") {
   sources = [
     "//src/ZLibWrap/ZLibWrap.cpp",
     "//src/ZLibWrap/ZLibWrap.h",
-    "//src/ZLibWrap/ZLibWrap.rc",
   ]
+  if (is_win) {
+    sources += [ "//src/ZLibWrap/ZLibWrap.rc" ]
+  }
   defines = [ "ZLIBWRAP_EXPORTS" ]
   deps = [ "//src/ZLibWrapLib" ]
 }

@@ -1,4 +1,5 @@
 #include "encoding.h"
+#include <Windows.h>
 
 namespace encoding {
 
