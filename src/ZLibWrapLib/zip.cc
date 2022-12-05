@@ -46,7 +46,7 @@ bool ZipAddFile(zipFile zf,
   }
 #else
   file_info.external_fa = st.st_mode;
-  tm *date = localtime(&st.st_mtim.tv_sec);
+  tm *date = localtime(&st.st_mtime);
   file_info.tmz_date.tm_sec = date->tm_sec;
   file_info.tmz_date.tm_min = date->tm_min;
   file_info.tmz_date.tm_hour = date->tm_hour;
