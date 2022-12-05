@@ -33,6 +33,8 @@ source_set("zlib") {
   ]
   if (is_win) {
     defines = [ "WINAPI_FAMILY=100" ]
+  } else {
+    cflags = [ "-Wno-implicit-function-declaration" ]
   }
 }
 
