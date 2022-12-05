@@ -1,4 +1,3 @@
-#include "encoding.h"
 #include "zlib_wrap.h"
 #include <ctime>
 #include <loki/ScopeGuard.h>
@@ -8,7 +7,9 @@
 #include <stdio.h>
 #endif
 #ifdef _WIN32
+#include "encoding.h"
 #include <io.h>
+#include <Windows.h>
 #else
 #include <glob.h>
 #include <sys/stat.h>
@@ -68,7 +69,7 @@ bool ZipAddFile(zipFile zf,
   }
   LOKI_ON_BLOCK_EXIT(zipCloseFileInZip, zf);
 
-#ifdef _WIN
+#ifdef _WIN32
   if ((find_data.attrib & _A_SUBDIR) != 0) {
     return true;
   }

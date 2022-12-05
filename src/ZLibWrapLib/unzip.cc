@@ -1,15 +1,16 @@
-#include "encoding.h"
 #include "zlib_wrap.h"
+#include <cstring>
+#include <ctime>
 #include <loki/ScopeGuard.h>
 #include <minizip/unzip.h>
 #include <string>
-#include <cstring>
-#include <ctime>
 #ifdef _DEBUG
 #include <stdio.h>
 #endif
 #ifdef _WIN32
+#include "encoding.h"
 #include <direct.h>
+#include <Windows.h>
 #define mkdir(path) _mkdir(path)
 #include <sys/utime.h>
 #else
