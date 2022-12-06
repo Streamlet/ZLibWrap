@@ -121,7 +121,9 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
 
 } // namespace
 
-ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir) {
+namespace zlibwrap {
+
+bool ZipExtract(const char *zip_file, const char *target_dir) {
   unzFile uf = unzOpen64(zip_file);
   if (uf == nullptr) {
     return false;
@@ -157,3 +159,5 @@ ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir) {
 
   return true;
 }
+
+} // namespace zlibwrap

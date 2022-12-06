@@ -21,21 +21,14 @@ static_library("zlibwrap") {
 shared_library("zlibwrapd") {
   configs += [ "//build_config:project_common" ]
   sources = [
-    "//src/unzip.cc",
-    "//src/zip.cc",
     "//src/zlib_wrap.h",
+    "//src/zlib_wrapd.h",
   ]
   if (is_win) {
     sources += [
       "//src/zlibwrap.rc",
-      "//src/encoding.h",
-      "//src/encoding_win.cc",
     ]
   }
-  include_dirs = [
-    "//thirdparty/zlib/contrib",
-    "//thirdparty/zlib",
-  ]
   defines = [ "ZLIBWRAP_EXPORTS" ]
-  deps = [ "//thirdparty:minizip" ]
+  deps = [ ":zlibwrap" ]
 }

@@ -1,4 +1,4 @@
-#include "zlibwrap.h"
+#include "zlibwrapd.h"
 #include <ctime>
 #include <loki/ScopeGuard.h>
 #include <minizip/zip.h>
@@ -172,7 +172,9 @@ bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pa
 #endif
 } // namespace
 
-ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern) {
+namespace zlibwrap {
+
+bool ZipCompress(const char *zip_file, const char *pattern) {
   zipFile zf = zipOpen64(zip_file, 0);
   if (zf == nullptr) {
     return false;
@@ -181,3 +183,5 @@ ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern) {
 
   return ZipAddFiles(zf, "", pattern);
 }
+
+} // namespace zlibwrap

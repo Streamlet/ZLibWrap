@@ -18,6 +18,6 @@ config("project_common") {
     "//thirdparty/loki/include",
   ]
   if (is_win) {
-    configs += [ "//build/config/win:static_runtime" ]
+    configs = [ "//build/config/win:static_runtime" ]
   }
 }
