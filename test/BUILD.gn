@@ -1,0 +1,13 @@
+executable("zip") {
+  configs += [ "//build_config:project_common" ]
+  sources = [ "//test/zip.cc" ]
+  include_dirs = [ "//src" ]
+  deps = [ "//src:zlibwrap" ]
+}
+
+executable("unzip") {
+  configs += [ "//build_config:project_common" ]
+  sources = [ "//test/unzip.cc" ]
+  include_dirs = [ "//src" ]
+  deps = [ "//src:zlibwrap" ]
+}

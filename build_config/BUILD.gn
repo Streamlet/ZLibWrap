@@ -6,8 +6,7 @@ config("project_common") {
     cflags_c = [ "-std=c17" ]
     cflags_cc = [ "-std=c++17" ]
   }
-  defines = [
-  ]
+  defines = []
   if (is_win) {
     defines += [
       "_WIN32_WINNT=0x0501",
@@ -18,4 +17,7 @@ config("project_common") {
     "//src",
     "//thirdparty/loki/include",
   ]
+  if (is_win) {
+    configs += [ "//build/config/win:static_runtime" ]
+  }
 }

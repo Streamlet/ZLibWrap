@@ -1,4 +1,4 @@
-#include "zlib_wrap.h"
+#include "zlibwrap.h"
 #include <cstring>
 #include <ctime>
 #include <loki/ScopeGuard.h>
@@ -21,11 +21,26 @@
 
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
 
-bool ZipExtractCurrentFile(unzFile uf, const std::string &dest_dir) {
+namespace {
+
+void mkdirs(char *path) {
+  for (char *p = strchr(path, '/'); p != nullptr; p = strchr(p + 1, '/')) {
+    *p = '\0';
+    mkdir(path);
+    *p = '/';
+  }
+}
+
+bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
   std::string inner_path;
   inner_path.resize(260);
   unz_file_info64 file_info;
-  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path.data(), inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK) {
+#if __cplusplus >= 201703L
+  char *inner_path_buffer = inner_path.data();
+#else
+  char *inner_path_buffer = &inner_path[0];
+#endif
+  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK) {
     return false;
   }
   inner_path.resize(strlen(inner_path.c_str()));
@@ -45,29 +60,17 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &dest_dir) {
   }
 #endif
 
-  // mkdirs
-  std::string dest_path = dest_dir;
-  bool is_dir = false;
-  for (char *p = inner_path.data(), *q = nullptr;; p = q + 1) {
-    if (*p == '\0') {
-      is_dir = true;
-      break;
-    }
-    q = strchr(p, '/');
-    if (q != nullptr) {
-      *q = '\0';
-      dest_path += p;
-      mkdir(dest_path.c_str());
-      *q = '/';
-      dest_path += '/';
-    } else {
-      dest_path += p;
-      break;
-    }
-  }
+  std::string target_path = target_dir + inner_path;
+#if __cplusplus >= 201703L
+  char *target_path_buffer = target_path.data();
+#else
+  char *target_path_buffer = &target_path[0];
+#endif
+  mkdirs(target_path_buffer);
+  bool is_dir = *inner_path.crbegin() == '/';
 
   if (!is_dir) {
-    FILE *f = fopen(dest_path.c_str(), "wb");
+    FILE *f = fopen(target_path.c_str(), "wb");
     if (f == nullptr) {
       return false;
     }
@@ -87,7 +90,7 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &dest_dir) {
   }
 
 #ifdef _WIN32
-  HANDLE hFile = CreateFileA(dest_path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING,
+  HANDLE hFile = CreateFileA(target_path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING,
                              is_dir ? FILE_ATTRIBUTE_DIRECTORY : 0, nullptr);
   if (hFile != INVALID_HANDLE_VALUE) {
     FILETIME ftLocal, ftUTC;
@@ -111,12 +114,14 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &dest_dir) {
 
   utimbuf ut = {};
   ut.actime = ut.modtime = mktime(&date);
-  utime(dest_path.c_str(), &ut);
+  utime(target_path.c_str(), &ut);
 #endif
   return true;
 }
 
-bool ZipExtract(const char *zip_file, const char *dest_dir) {
+} // namespace
+
+ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir) {
   unzFile uf = unzOpen64(zip_file);
   if (uf == nullptr) {
     return false;
@@ -128,14 +133,19 @@ bool ZipExtract(const char *zip_file, const char *dest_dir) {
     return false;
   }
 
-  mkdir(dest_dir);
-  std::string root_dest_dir = dest_dir;
-  if (!root_dest_dir.empty() && (*root_dest_dir.crbegin() != '\\' && *root_dest_dir.crbegin() != '/')) {
-    root_dest_dir += "/";
+  std::string root_dir = target_dir;
+  if (!root_dir.empty() && (*root_dir.crbegin() != '\\' && *root_dir.crbegin() != '/')) {
+    root_dir += "/";
   }
+#if __cplusplus >= 201703L
+  char *root_dir_buffer = root_dir.data();
+#else
+  char *root_dir_buffer = &root_dir[0];
+#endif
+  mkdirs(root_dir_buffer);
 
   for (int i = 0; i < gi.number_entry; ++i) {
-    if (!ZipExtractCurrentFile(uf, root_dest_dir)) {
+    if (!ZipExtractCurrentFile(uf, root_dir)) {
       return false;
     }
     if (i < gi.number_entry - 1) {

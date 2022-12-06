@@ -1,4 +1,4 @@
-#include "zlib_wrap.h"
+#include "zlibwrap.h"
 #include <ctime>
 #include <loki/ScopeGuard.h>
 #include <minizip/zip.h>
@@ -16,6 +16,8 @@
 #endif
 
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
+
+namespace {
 
 bool ZipAddFile(zipFile zf,
                 const std::string &inner_path,
@@ -168,8 +170,9 @@ bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pa
   return true;
 }
 #endif
+} // namespace
 
-bool ZipCompress(const char *pattern, const char *zip_file) {
+ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern) {
   zipFile zf = zipOpen64(zip_file, 0);
   if (zf == nullptr) {
     return false;

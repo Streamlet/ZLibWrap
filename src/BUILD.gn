@@ -1,0 +1,41 @@
+static_library("zlibwrap") {
+  configs += [ "//build_config:project_common" ]
+  sources = [
+    "//src/unzip.cc",
+    "//src/zip.cc",
+    "//src/zlib_wrap.h",
+  ]
+  if (is_win) {
+    sources += [
+      "//src/encoding.h",
+      "//src/encoding_win.cc",
+    ]
+  }
+  include_dirs = [
+    "//thirdparty/zlib/contrib",
+    "//thirdparty/zlib",
+  ]
+  deps = [ "//thirdparty:minizip" ]
+}
+
+shared_library("zlibwrapd") {
+  configs += [ "//build_config:project_common" ]
+  sources = [
+    "//src/unzip.cc",
+    "//src/zip.cc",
+    "//src/zlib_wrap.h",
+  ]
+  if (is_win) {
+    sources += [
+      "//src/zlibwrap.rc",
+      "//src/encoding.h",
+      "//src/encoding_win.cc",
+    ]
+  }
+  include_dirs = [
+    "//thirdparty/zlib/contrib",
+    "//thirdparty/zlib",
+  ]
+  defines = [ "ZLIBWRAP_EXPORTS" ]
+  deps = [ "//thirdparty:minizip" ]
+}
