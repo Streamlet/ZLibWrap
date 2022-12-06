@@ -143,11 +143,13 @@ bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pa
   LOKI_ON_BLOCK_EXIT(globfree, &globbuf);
 
   for (size_t i = 0; i < globbuf.gl_pathc; ++i) {
+    std::string inner_path = inner_dir;
     std::string source_path = globbuf.gl_pathv[i];
     size_t slash_pos = source_path.rfind('/');
-    if (slash_pos == std::string::npos)
-      return false;
-    std::string inner_path = inner_dir + source_path.substr(slash_pos);
+    if (slash_pos != std::string::npos)
+      inner_path += source_path.substr(slash_pos);
+    else
+      inner_path += source_path;
 
     struct stat st = {};
     if (stat(source_path.c_str(), &st) != 0)
