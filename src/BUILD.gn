@@ -1,9 +1,9 @@
 static_library("zlibwrap") {
   configs += [ "../build_config:project_common" ]
   sources = [
+    "../include/zlibwrap/zlibwrap.h",
     "unzip.cc",
     "zip.cc",
-    "zlib_wrap.h",
   ]
   if (is_win) {
     sources += [
@@ -14,6 +14,7 @@ static_library("zlibwrap") {
   include_dirs = [
     "../thirdparty/zlib/contrib",
     "../thirdparty/zlib",
+    "../include",
   ]
   deps = [ "../thirdparty:minizip" ]
 }
@@ -21,14 +22,13 @@ static_library("zlibwrap") {
 shared_library("zlibwrapd") {
   configs += [ "../build_config:project_common" ]
   sources = [
-    "zlib_wrap.h",
-    "zlib_wrapd.h",
+    "../include/zlibwrap/zlibwrapd.h",
+    "zlibwrapd.cc",
   ]
   if (is_win) {
-    sources += [
-      "zlibwrap.rc",
-    ]
+    sources += [ "zlibwrap.rc" ]
   }
+  include_dirs = [ "../include" ]
   defines = [ "ZLIBWRAP_EXPORTS" ]
   deps = [ ":zlibwrap" ]
 }

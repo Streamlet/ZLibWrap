@@ -1,9 +1,9 @@
-#include "zlibwrap.h"
 #include <cstring>
 #include <ctime>
 #include <loki/ScopeGuard.h>
 #include <minizip/unzip.h>
 #include <string>
+#include <zlibwrap/zlibwrap.h>
 #ifdef _DEBUG
 #include <stdio.h>
 #endif

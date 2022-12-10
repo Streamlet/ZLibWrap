@@ -1,7 +1,7 @@
 #include <cstring>
 #include <locale.h>
 #include <stdio.h>
-#include <zlibwrap.h>
+#include <zlibwrap/zlibwrap.h>
 
 void ShowHelp() {
   printf("Usage: zip <zip_file> <source_file_pattern>\n");
