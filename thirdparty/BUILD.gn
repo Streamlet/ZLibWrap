@@ -1,7 +1,7 @@
 source_set("zlib") {
-  configs += [ "//build_config:project_common" ]
+  configs += [ "../build_config:project_common" ]
   if (is_win) {
-    configs += [ "//build/config/win:static_runtime" ]
+    configs += [ "../build/config/win:static_runtime" ]
   }
   sources = [
     "zlib/adler32.c",
@@ -39,9 +39,9 @@ source_set("zlib") {
 }
 
 source_set("minizip") {
-  configs += [ "//build_config:project_common" ]
+  configs += [ "../build_config:project_common" ]
   if (is_win) {
-    configs += [ "//build/config/win:static_runtime" ]
+    configs += [ "../build/config/win:static_runtime" ]
   }
   sources = [
     "zlib/contrib/minizip/crypt.h",
@@ -61,6 +61,6 @@ source_set("minizip") {
     ]
     defines = [ "WINAPI_FAMILY=100" ]
   }
-  include_dirs = [ "//thirdparty/zlib" ]
+  include_dirs = [ "zlib" ]
   deps = [ ":zlib" ]
 }

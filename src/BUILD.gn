@@ -1,32 +1,32 @@
 static_library("zlibwrap") {
-  configs += [ "//build_config:project_common" ]
+  configs += [ "../build_config:project_common" ]
   sources = [
-    "//src/unzip.cc",
-    "//src/zip.cc",
-    "//src/zlib_wrap.h",
+    "unzip.cc",
+    "zip.cc",
+    "zlib_wrap.h",
   ]
   if (is_win) {
     sources += [
-      "//src/encoding.h",
-      "//src/encoding_win.cc",
+      "encoding.h",
+      "encoding_win.cc",
     ]
   }
   include_dirs = [
-    "//thirdparty/zlib/contrib",
-    "//thirdparty/zlib",
+    "../thirdparty/zlib/contrib",
+    "../thirdparty/zlib",
   ]
-  deps = [ "//thirdparty:minizip" ]
+  deps = [ "../thirdparty:minizip" ]
 }
 
 shared_library("zlibwrapd") {
-  configs += [ "//build_config:project_common" ]
+  configs += [ "../build_config:project_common" ]
   sources = [
-    "//src/zlib_wrap.h",
-    "//src/zlib_wrapd.h",
+    "zlib_wrap.h",
+    "zlib_wrapd.h",
   ]
   if (is_win) {
     sources += [
-      "//src/zlibwrap.rc",
+      "zlibwrap.rc",
     ]
   }
   defines = [ "ZLIBWRAP_EXPORTS" ]

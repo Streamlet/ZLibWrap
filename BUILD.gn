@@ -1,8 +1,8 @@
 group("all") {
   deps = [
-    "//src:zlibwrap",
-    "//src:zlibwrapd",
-    "//test:unzip",
-    "//test:zip",
+    "src:zlibwrap",
+    "src:zlibwrapd",
+    "test:unzip",
+    "test:zip",
   ]
 }

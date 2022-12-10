@@ -14,10 +14,10 @@ config("project_common") {
     ]
   }
   include_dirs = [
-    "//src",
-    "//thirdparty/loki/include",
+    "../src",
+    "../thirdparty/loki/include",
   ]
   if (is_win) {
-    configs = [ "//build/config/win:static_runtime" ]
+    configs = [ "../build/config/win:static_runtime" ]
   }
 }
