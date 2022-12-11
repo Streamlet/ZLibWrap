@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     printf("Failed to compress %s to %s.\n", source_file_pattern, zip_file);
     return -1;
   }
+
   printf("Compressed %s to %s successfully.\n", source_file_pattern, zip_file);
 
   return 0;

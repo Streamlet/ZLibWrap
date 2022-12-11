@@ -72,13 +72,11 @@ bool ZipAddFile(zipFile zf,
   LOKI_ON_BLOCK_EXIT(zipCloseFileInZip, zf);
 
 #ifdef _WIN32
-  if ((find_data.attrib & _A_SUBDIR) != 0) {
+  if ((find_data.attrib & _A_SUBDIR) != 0)
     return true;
-  }
 #else
-  if (S_ISDIR(st.st_mode)) {
+  if (S_ISDIR(st.st_mode))
     return true;
-  }
 #endif
 
   FILE *f = fopen(source_file.c_str(), "rb");
@@ -92,9 +90,8 @@ bool ZipAddFile(zipFile zf,
     size_t size = fread(buffer, 1, BUFFER_SIZE, f);
     if (size < BUFFER_SIZE && ferror(f))
       return false;
-    if (zipWriteInFileInZip(zf, buffer, size) < 0) {
+    if (zipWriteInFileInZip(zf, buffer, size) < 0)
       return false;
-    }
   }
   return true;
 }
@@ -139,9 +136,8 @@ bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pa
 #else
 bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pattern) {
   glob_t globbuf = {};
-  if (glob(pattern.c_str(), 0, nullptr, &globbuf) != 0) {
+  if (glob(pattern.c_str(), 0, nullptr, &globbuf) != 0)
     return false;
-  }
   LOKI_ON_BLOCK_EXIT(globfree, &globbuf);
 
   for (size_t i = 0; i < globbuf.gl_pathc; ++i) {
@@ -176,9 +172,8 @@ namespace zlibwrap {
 
 bool ZipCompress(const char *zip_file, const char *pattern) {
   zipFile zf = zipOpen64(zip_file, 0);
-  if (zf == nullptr) {
+  if (zf == nullptr)
     return false;
-  }
   LOKI_ON_BLOCK_EXIT(zipClose, zf, (const char *)nullptr);
 
   return ZipAddFiles(zf, "", pattern);

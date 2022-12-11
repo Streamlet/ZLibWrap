@@ -40,24 +40,21 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
 #else
   char *inner_path_buffer = &inner_path[0];
 #endif
-  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK) {
+  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK)
     return false;
-  }
   inner_path.resize(strlen(inner_path.c_str()));
 
 #ifdef _DEBUG
   printf("Extracting %s ...\n", inner_path.c_str());
 #endif
 
-  if (unzOpenCurrentFile(uf) != UNZ_OK) {
+  if (unzOpenCurrentFile(uf) != UNZ_OK)
     return false;
-  }
   LOKI_ON_BLOCK_EXIT(unzCloseCurrentFile, uf);
 
 #ifdef _WIN32
-  if ((file_info.flag & ZIP_GPBF_LANGUAGE_ENCODING_FLAG) != 0) {
+  if ((file_info.flag & ZIP_GPBF_LANGUAGE_ENCODING_FLAG) != 0)
     inner_path = encoding::UCS2ToANSI(encoding::UTF8ToUCS2(inner_path));
-  }
 #endif
 
   std::string target_path = target_dir + inner_path;
@@ -71,9 +68,8 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
 
   if (!is_dir) {
     FILE *f = fopen(target_path.c_str(), "wb");
-    if (f == nullptr) {
+    if (f == nullptr)
       return false;
-    }
     LOKI_ON_BLOCK_EXIT(fclose, f);
 
     const size_t BUFFER_SIZE = 4096;
@@ -125,20 +121,17 @@ namespace zlibwrap {
 
 bool ZipExtract(const char *zip_file, const char *target_dir) {
   unzFile uf = unzOpen64(zip_file);
-  if (uf == nullptr) {
+  if (uf == nullptr)
     return false;
-  }
   LOKI_ON_BLOCK_EXIT(unzClose, uf);
 
   unz_global_info64 gi = {};
-  if (unzGetGlobalInfo64(uf, &gi) != UNZ_OK) {
+  if (unzGetGlobalInfo64(uf, &gi) != UNZ_OK)
     return false;
-  }
 
   std::string root_dir = target_dir;
-  if (!root_dir.empty() && (*root_dir.crbegin() != '\\' && *root_dir.crbegin() != '/')) {
+  if (!root_dir.empty() && (*root_dir.crbegin() != '\\' && *root_dir.crbegin() != '/'))
     root_dir += "/";
-  }
 #if __cplusplus >= 201703L
   char *root_dir_buffer = root_dir.data();
 #else
@@ -147,13 +140,11 @@ bool ZipExtract(const char *zip_file, const char *target_dir) {
   mkdirs(root_dir_buffer);
 
   for (int i = 0; i < gi.number_entry; ++i) {
-    if (!ZipExtractCurrentFile(uf, root_dir)) {
+    if (!ZipExtractCurrentFile(uf, root_dir))
       return false;
-    }
     if (i < gi.number_entry - 1) {
-      if (unzGoToNextFile(uf) != UNZ_OK) {
+      if (unzGoToNextFile(uf) != UNZ_OK)
         return false;
-      }
     }
   }
 
