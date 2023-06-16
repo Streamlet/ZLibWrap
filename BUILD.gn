@@ -2,7 +2,13 @@ group("all") {
   deps = [
     "src:zlibwrap",
     "src:zlibwrapd",
-    "test:unzip",
-    "test:zip",
+  ]
+}
+
+group("test") {
+  testonly = true
+  deps = [
+    "sample:unzip",
+    "sample:zip",
   ]
 }
