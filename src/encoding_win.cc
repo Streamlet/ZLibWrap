@@ -7,21 +7,21 @@ namespace {
 
 std::wstring ANSIToUCS2(const char *ansi, size_t length, UINT code_page) {
   std::wstring result;
-  int size = ::MultiByteToWideChar(code_page, 0, ansi, length, nullptr, 0);
+  int size = ::MultiByteToWideChar(code_page, 0, ansi, (int)length, nullptr, 0);
   if (size == 0)
     return result;
   result.resize(size);
-  ::MultiByteToWideChar(code_page, 0, ansi, length, result.data(), size);
+  ::MultiByteToWideChar(code_page, 0, ansi, (int)length, result.data(), size);
   return result;
 }
 
 std::string UCS2ToANSI(const wchar_t *ucs2, size_t length, UINT code_page) {
   std::string ansi;
-  int size = ::WideCharToMultiByte(code_page, 0, ucs2, length, nullptr, 0, nullptr, nullptr);
+  int size = ::WideCharToMultiByte(code_page, 0, ucs2, (int)length, nullptr, 0, nullptr, nullptr);
   if (size == 0)
     return ansi;
   ansi.resize(size);
-  ::WideCharToMultiByte(code_page, 0, ucs2, length, ansi.data(), size, nullptr, nullptr);
+  ::WideCharToMultiByte(code_page, 0, ucs2, (int)length, ansi.data(), size, nullptr, nullptr);
   return ansi;
 }
 

@@ -1,5 +1,4 @@
 static_library("zlibwrap") {
-  configs += [ "../build_config:project_common" ]
   sources = [
     "../include/zlibwrap/zlibwrap.h",
     "unzip.cc",
@@ -12,6 +11,7 @@ static_library("zlibwrap") {
     ]
   }
   include_dirs = [
+    "../thirdparty/loki/include",
     "../thirdparty/zlib/contrib",
     "../thirdparty/zlib",
     "../include",
@@ -20,7 +20,6 @@ static_library("zlibwrap") {
 }
 
 shared_library("zlibwrapd") {
-  configs += [ "../build_config:project_common" ]
   sources = [
     "../include/zlibwrap/zlibwrapd.h",
     "zlibwrapd.cc",

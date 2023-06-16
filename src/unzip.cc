@@ -40,7 +40,8 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
 #else
   char *inner_path_buffer = &inner_path[0];
 #endif
-  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, inner_path.size(), nullptr, 0, nullptr, 0) != UNZ_OK)
+  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, (uLong)inner_path.size(), nullptr, 0, nullptr, 0) !=
+      UNZ_OK)
     return false;
   inner_path.resize(strlen(inner_path.c_str()));
 

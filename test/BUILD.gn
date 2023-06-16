@@ -1,12 +1,10 @@
 executable("zip") {
-  configs += [ "../build_config:project_common" ]
   sources = [ "zip.cc" ]
   include_dirs = [ "../include" ]
   deps = [ "../src:zlibwrap" ]
 }
 
 executable("unzip") {
-  configs += [ "../build_config:project_common" ]
   sources = [ "unzip.cc" ]
   include_dirs = [ "../include" ]
   deps = [ "../src:zlibwrap" ]

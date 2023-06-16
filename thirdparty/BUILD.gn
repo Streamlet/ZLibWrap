@@ -1,8 +1,4 @@
 source_set("zlib") {
-  configs += [ "../build_config:project_common" ]
-  if (is_win) {
-    configs += [ "../build/config/win:static_runtime" ]
-  }
   sources = [
     "zlib/adler32.c",
     "zlib/compress.c",
@@ -31,18 +27,12 @@ source_set("zlib") {
     "zlib/zutil.c",
     "zlib/zutil.h",
   ]
-  if (is_win) {
-    defines = [ "WINAPI_FAMILY=100" ]
-  } else {
+  if (!is_win) {
     cflags = [ "-Wno-implicit-function-declaration" ]
   }
 }
 
 source_set("minizip") {
-  configs += [ "../build_config:project_common" ]
-  if (is_win) {
-    configs += [ "../build/config/win:static_runtime" ]
-  }
   sources = [
     "zlib/contrib/minizip/crypt.h",
     "zlib/contrib/minizip/ioapi.c",
@@ -59,7 +49,6 @@ source_set("minizip") {
       "zlib/contrib/minizip/iowin32.c",
       "zlib/contrib/minizip/iowin32.h",
     ]
-    defines = [ "WINAPI_FAMILY=100" ]
   }
   include_dirs = [ "zlib" ]
   deps = [ ":zlib" ]

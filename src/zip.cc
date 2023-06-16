@@ -84,13 +84,13 @@ bool ZipAddFile(zipFile zf,
     return false;
   LOKI_ON_BLOCK_EXIT(fclose, f);
 
-  const size_t BUFFER_SIZE = 4096;
+  const unsigned int BUFFER_SIZE = 4096;
   unsigned char buffer[BUFFER_SIZE];
   while (!feof(f)) {
     size_t size = fread(buffer, 1, BUFFER_SIZE, f);
     if (size < BUFFER_SIZE && ferror(f))
       return false;
-    if (zipWriteInFileInZip(zf, buffer, size) < 0)
+    if (zipWriteInFileInZip(zf, buffer, (unsigned int)size) < 0)
       return false;
   }
   return true;
