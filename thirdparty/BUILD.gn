@@ -1,3 +1,25 @@
+# loki
+
+config("loki_public_config") {
+  include_dirs = [ "loki/include" ]
+  if (is_win) {
+    cflags = [ "/wd4828" ]
+  }
+}
+
+group("loki") {
+  public_configs = [ ":loki_public_config" ]
+}
+
+# zlib
+
+config("zlib_public_config") {
+  include_dirs = [
+    "zlib",
+    "zlib/contrib",
+  ]
+}
+
 source_set("zlib") {
   sources = [
     "zlib/adler32.c",
@@ -30,6 +52,7 @@ source_set("zlib") {
   if (!is_win) {
     cflags = [ "-Wno-implicit-function-declaration" ]
   }
+  public_configs = [ ":zlib_public_config" ]
 }
 
 source_set("minizip") {
@@ -50,6 +73,6 @@ source_set("minizip") {
       "zlib/contrib/minizip/iowin32.h",
     ]
   }
-  include_dirs = [ "zlib" ]
   deps = [ ":zlib" ]
+  public_configs = [ ":zlib_public_config" ]
 }

@@ -10,13 +10,11 @@ static_library("zlibwrap") {
       "encoding_win.cc",
     ]
   }
-  include_dirs = [
-    "../thirdparty/loki/include",
-    "../thirdparty/zlib/contrib",
-    "../thirdparty/zlib",
-    "../include",
+  include_dirs = [ "../include" ]
+  deps = [
+    "../thirdparty:loki",
+    "../thirdparty:minizip",
   ]
-  deps = [ "../thirdparty:minizip" ]
 }
 
 shared_library("zlibwrapd") {
