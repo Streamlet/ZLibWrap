@@ -50,7 +50,10 @@ source_set("zlib") {
     "zlib/zutil.h",
   ]
   if (!is_win) {
-    cflags = [ "-Wno-implicit-function-declaration" ]
+    cflags = [
+      "-Wno-implicit-function-declaration",
+      "-Wno-deprecated-non-prototype",
+    ]
   }
   public_configs = [ ":zlib_public_config" ]
 }
@@ -72,6 +75,8 @@ source_set("minizip") {
       "zlib/contrib/minizip/iowin32.c",
       "zlib/contrib/minizip/iowin32.h",
     ]
+  } else {
+    cflags = [ "-Wno-deprecated-non-prototype" ]
   }
   deps = [ ":zlib" ]
   public_configs = [ ":zlib_public_config" ]
