@@ -15,6 +15,10 @@
 #include <sys/stat.h>
 #endif
 
+#if defined(_MSC_VER) && MSC_VER < 1600
+#define nullptr NULL
+#endif
+
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
 
 namespace {

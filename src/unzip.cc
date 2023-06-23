@@ -19,6 +19,10 @@
 #include <utime.h>
 #endif
 
+#if defined(_MSC_VER) && MSC_VER < 1600
+#define nullptr NULL
+#endif
+
 #define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
 
 namespace {
@@ -65,7 +69,7 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
   char *target_path_buffer = &target_path[0];
 #endif
   mkdirs(target_path_buffer);
-  bool is_dir = *inner_path.crbegin() == '/';
+  bool is_dir = *inner_path.rbegin() == '/';
 
   if (!is_dir) {
     FILE *f = fopen(target_path.c_str(), "wb");
@@ -131,7 +135,7 @@ bool ZipExtract(const char *zip_file, const char *target_dir) {
     return false;
 
   std::string root_dir = target_dir;
-  if (!root_dir.empty() && (*root_dir.crbegin() != '\\' && *root_dir.crbegin() != '/'))
+  if (!root_dir.empty() && (*root_dir.rbegin() != '\\' && *root_dir.rbegin() != '/'))
     root_dir += "/";
 #if __cplusplus >= 201703L
   char *root_dir_buffer = root_dir.data();
