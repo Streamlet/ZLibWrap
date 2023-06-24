@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# This file can be redistributed to your source code root,
+# to help those who don't have srcdep environment, to fetch dependencies conveniently.
+
+BASEDIR=$(dirname "$0")
+if [ ! -d "$BASEDIR/.srcdep" ]; then
+    mkdir -p "$BASEDIR/.srcdep"
+fi
+if [ ! -d "$BASEDIR/.srcdep/repo" ]; then
+    git clone https://github.com/Streamlet/srcdep.git "$BASEDIR/.srcdep/repo"
+fi
+
+exec "$BASEDIR/.srcdep/repo/srcdep"
