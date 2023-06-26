@@ -1,0 +1,110 @@
+name: autobuild
+
+on:
+  push:
+  pull_request:
+  release:
+    types: published
+
+jobs:
+
+  build:
+    name: Build ${{ matrix.config }} on ${{ matrix.os }} with ${{ matrix.arch }} arch
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macOS-latest, ubuntu-latest]
+        arch: [ x64, x86 ]
+        config: [ debug, release ]
+        exclude:
+          - os: macOS-latest
+            arch: x86
+          - os: ubuntu-latest
+            arch: x86
+    steps:
+
+    - name: Setup environment
+      run: |
+        pip install PyYAML
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Fetch dependencies on Windows
+      if: runner.os == 'Windows'
+      run: |
+        fetch_deps
+      shell: cmd
+
+    - name: Fetch dependencies on macOS and Linux
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: |
+        ./fetch_deps
+
+    - name: Fetch gn and ninja
+      run: |
+        python build/fetch_binaries.py
+
+    - name: Compile on Windows
+      if: runner.os == 'Windows'
+      run: |
+        build\bin\gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }}"
+        build\bin\ninja -C out/${{ matrix.config }}_${{ matrix.arch }}
+      shell: cmd
+
+    - name: Compile on macOS and Linux
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: |
+        build/bin/gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }}"
+        build/bin/ninja -C out/${{ matrix.config }}_${{ matrix.arch }}
+
+    - name: Make package on Windows
+      if: runner.os == 'Windows'
+      run: |
+        Compress-Archive `
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrap.lib,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\src\zlibwrap_cc.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\thirdparty\minizip_c.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\thirdparty\zlib_c.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrapd.dll,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrapd.dll.lib,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\src\zlibwrapd_cc.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zip.exe,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zip.exe.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe.pdb `
+          zlibwrap_win32_${{ matrix.arch }}.zip
+        echo "package_file=zlibwrap_win32_${{ matrix.arch }}.zip" >> "$env:GITHUB_ENV"
+      shell: pwsh
+
+    - name: Make package on MacOS
+      if: runner.os == 'macOS'
+      run: |
+        tar zcvf zlibwrap_darwin_${{ matrix.arch }}.tar.gz \
+          -C out/${{ matrix.config }}_${{ matrix.arch }} \
+          libzlibwrap.a \
+          libzlibwrapd.dylib \
+          libzlibwrapd.dylib.dSYM \
+          zip \
+          zip.dSYM \
+          unzip \
+          unzip.dSYM
+        echo "package_file=zlibwrap_darwin_${{ matrix.arch }}.tar.gz" >> "$GITHUB_ENV"
+
+    - name: Make package on Linux
+      if: runner.os == 'Linux'
+      run: |
+        tar zcvf zlibwrap_linux_${{ matrix.arch }}.tar.gz \
+          -C out/${{ matrix.config }}_${{ matrix.arch }} \
+          libzlibwrap.a \
+          libzlibwrapd.so \
+          zip \
+          unzip
+        echo "package_file=zlibwrap_linux_${{ matrix.arch }}.tar.gz" >> "$GITHUB_ENV"
+
+    - name: Upload Release on push tag
+      if: startsWith(github.ref, 'refs/tags/v') && matrix.config == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ env.package_file }}
