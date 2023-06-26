@@ -46,6 +46,10 @@ jobs:
         build/bin/gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }}"
         build/bin/ninja -C out/${{ matrix.config }}_${{ matrix.arch }}
 
+    - name: Test
+      run: |
+        python sample/test.py out/${{ matrix.config }}_${{ matrix.arch }}
+
     - name: Make package on Windows
       if: runner.os == 'Windows'
       run: |

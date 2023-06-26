@@ -17,8 +17,10 @@ int main(int argc, char *argv[]) {
   const char *zip_file = argv[1];
   const char *target_dir = argv[2];
 
-  if (!zlibwrap::ZipExtract(zip_file, target_dir))
+  if (!zlibwrap::ZipExtract(zip_file, target_dir)) {
     printf("Failed to Extract %s to %s.\n", zip_file, target_dir);
+    return -1;
+  }
 
   printf("Extracted %s to %s successfully.\n", zip_file, target_dir);
 
