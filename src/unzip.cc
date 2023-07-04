@@ -49,10 +49,6 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
     return false;
   inner_path.resize(strlen(inner_path.c_str()));
 
-#ifdef _DEBUG
-  printf("Extracting %s ...\n", inner_path.c_str());
-#endif
-
   if (unzOpenCurrentFile(uf) != UNZ_OK)
     return false;
   LOKI_ON_BLOCK_EXIT(unzCloseCurrentFile, uf);

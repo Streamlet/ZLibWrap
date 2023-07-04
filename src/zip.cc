@@ -32,10 +32,6 @@ bool ZipAddFile(zipFile zf,
                 const struct stat &st
 #endif
 ) {
-#ifdef _DEBUG
-  printf("Compressiong %s ...\n", source_file.c_str());
-#endif
-
   zip_fileinfo file_info = {};
   file_info.internal_fa = 0;
 #ifdef _WIN32
