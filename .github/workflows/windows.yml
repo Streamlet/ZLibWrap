@@ -1,0 +1,71 @@
+name: windows
+
+on:
+  push:
+  pull_request:
+  release:
+    types: published
+
+jobs:
+
+  build:
+    name: ${{ matrix.os }} ${{ matrix.arch }} ${{ matrix.config }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: cmd
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+        arch: [ x64, x86 ]
+        config: [ debug, release ]
+
+    steps:
+
+    - name: Setup python environment
+      run: |
+        pip install PyYAML
+
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Fetch dependencies
+      run: |
+        fetch_deps.bat
+
+    - name: Fetch gn and ninja
+      run: |
+        python build\\fetch_binaries.py
+
+    - name: Compile
+      run: |
+        build\\bin\\gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }}"
+        build\\bin\\ninja -C out/${{ matrix.config }}_${{ matrix.arch }}
+
+    - name: Test
+      run: |
+        python sample\\test.py out\\${{ matrix.config }}_${{ matrix.arch }}
+
+    - name: Make package
+      run: |
+        Compress-Archive `
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrap.lib,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\src\zlibwrap_cc.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\thirdparty\minizip_c.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\thirdparty\zlib_c.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrapd.dll,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrapd.dll.lib,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\obj\src\zlibwrapd_cc.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zip.exe,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\zip.exe.pdb,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe,`
+          out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe.pdb `
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrap_win32_${{ matrix.arch }}.zip
+      shell: pwsh
+
+    - name: Upload Release on push tag
+      if: startsWith(github.ref, 'refs/tags/v') && matrix.config == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: out/${{ matrix.config }}_${{ matrix.arch }}/zlibwrap_win32_${{ matrix.arch }}.zip
