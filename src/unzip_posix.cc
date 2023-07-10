@@ -1,51 +1,29 @@
+#include "zip.h"
 #include <cstring>
 #include <ctime>
 #include <loki/ScopeGuard.h>
 #include <minizip/unzip.h>
 #include <string>
-#include <zlibwrap/zlibwrap.h>
-#ifdef _DEBUG
-#include <stdio.h>
-#endif
-#ifdef _WIN32
-#include "encoding.h"
-#include <direct.h>
-#include <Windows.h>
-#define mkdir(path) _mkdir(path)
-#include <sys/utime.h>
-#else
 #include <sys/stat.h>
-#define mkdir(path) mkdir(path, 0755)
 #include <utime.h>
-#endif
-
-#if defined(_MSC_VER) && MSC_VER < 1600
-#define nullptr NULL
-#endif
-
-#define ZIP_GPBF_LANGUAGE_ENCODING_FLAG 0x800
+#include <zlibwrap/zlibwrap.h>
 
 namespace {
 
 void mkdirs(char *path) {
-  for (char *p = strchr(path, '/'); p != nullptr; p = strchr(p + 1, '/')) {
+  for (char *p = strchr(path, '/'); p != NULL; p = strchr(p + 1, '/')) {
     *p = '\0';
-    mkdir(path);
+    mkdir(path, 0755);
     *p = '/';
   }
 }
 
 bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
   std::string inner_path;
-  inner_path.resize(260);
+  inner_path.resize(1024);
   unz_file_info64 file_info;
-#if __cplusplus >= 201703L
-  char *inner_path_buffer = inner_path.data();
-#else
   char *inner_path_buffer = &inner_path[0];
-#endif
-  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, (uLong)inner_path.size(), nullptr, 0, nullptr, 0) !=
-      UNZ_OK)
+  if (unzGetCurrentFileInfo64(uf, &file_info, inner_path_buffer, (uLong)inner_path.size(), NULL, 0, NULL, 0) != UNZ_OK)
     return false;
   inner_path.resize(strlen(inner_path.c_str()));
 
@@ -53,23 +31,13 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
     return false;
   LOKI_ON_BLOCK_EXIT(unzCloseCurrentFile, uf);
 
-#ifdef _WIN32
-  if ((file_info.flag & ZIP_GPBF_LANGUAGE_ENCODING_FLAG) != 0)
-    inner_path = encoding::UCS2ToANSI(encoding::UTF8ToUCS2(inner_path));
-#endif
-
   std::string target_path = target_dir + inner_path;
-#if __cplusplus >= 201703L
-  char *target_path_buffer = target_path.data();
-#else
-  char *target_path_buffer = &target_path[0];
-#endif
-  mkdirs(target_path_buffer);
+  mkdirs(&target_path[0]);
   bool is_dir = *inner_path.rbegin() == '/';
 
   if (!is_dir) {
     FILE *f = fopen(target_path.c_str(), "wb");
-    if (f == nullptr)
+    if (f == NULL)
       return false;
     LOKI_ON_BLOCK_EXIT(fclose, f);
 
@@ -86,17 +54,6 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
     }
   }
 
-#ifdef _WIN32
-  HANDLE hFile = CreateFileA(target_path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING,
-                             is_dir ? FILE_ATTRIBUTE_DIRECTORY : 0, nullptr);
-  if (hFile != INVALID_HANDLE_VALUE) {
-    FILETIME ftLocal, ftUTC;
-    DosDateTimeToFileTime((WORD)(file_info.dosDate >> 16), (WORD)file_info.dosDate, &ftLocal);
-    LocalFileTimeToFileTime(&ftLocal, &ftUTC);
-    SetFileTime(hFile, &ftUTC, &ftUTC, &ftUTC);
-    CloseHandle(hFile);
-  }
-#else
   tm date = {};
   date.tm_sec = file_info.tmu_date.tm_sec;
   date.tm_min = file_info.tmu_date.tm_min;
@@ -112,7 +69,6 @@ bool ZipExtractCurrentFile(unzFile uf, const std::string &target_dir) {
   utimbuf ut = {};
   ut.actime = ut.modtime = mktime(&date);
   utime(target_path.c_str(), &ut);
-#endif
   return true;
 }
 
@@ -122,7 +78,7 @@ namespace zlibwrap {
 
 bool ZipExtract(const char *zip_file, const char *target_dir) {
   unzFile uf = unzOpen64(zip_file);
-  if (uf == nullptr)
+  if (uf == NULL)
     return false;
   LOKI_ON_BLOCK_EXIT(unzClose, uf);
 
@@ -133,11 +89,7 @@ bool ZipExtract(const char *zip_file, const char *target_dir) {
   std::string root_dir = target_dir;
   if (!root_dir.empty() && (*root_dir.rbegin() != '\\' && *root_dir.rbegin() != '/'))
     root_dir += "/";
-#if __cplusplus >= 201703L
-  char *root_dir_buffer = root_dir.data();
-#else
   char *root_dir_buffer = &root_dir[0];
-#endif
   mkdirs(root_dir_buffer);
 
   for (int i = 0; i < gi.number_entry; ++i) {

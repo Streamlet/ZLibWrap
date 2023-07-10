@@ -1,13 +1,19 @@
 static_library("zlibwrap") {
   sources = [
     "../include/zlibwrap/zlibwrap.h",
-    "unzip.cc",
-    "zip.cc",
+    "zip.h",
   ]
   if (is_win) {
     sources += [
       "encoding.h",
       "encoding_win.cc",
+      "unzip_win.cc",
+      "zip_win.cc",
+    ]
+  } else {
+    sources += [
+      "unzip_posix.cc",
+      "zip_posix.cc",
     ]
   }
   include_dirs = [ "../include" ]

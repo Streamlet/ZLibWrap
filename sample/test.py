@@ -5,17 +5,18 @@ import os
 import sys
 import shutil
 import locale
+import codecs
 
 
 def write_file(path, content):
-    with open(path, 'w') as f:
+    with codecs.open(path, 'w', 'utf-8') as f:
         f.write(content)
 
 
 def check_file(path, content):
     file_content = ''
     try:
-        with open(path, 'r') as f:
+        with codecs.open(path, 'r', 'utf-8') as f:
             file_content = f.read()
     except:
         file_content = None
@@ -74,23 +75,23 @@ def test_wildcard2(zip_cmd, unzip_cmd):
 
 
 def test_non_ascii_file_name(zip_cmd, unzip_cmd):
-    if sys.platform == 'win32' and locale.getpreferredencoding() not in ('cp65001', 'cp936'):
-        return
     os.makedirs('test_root/目录1/目录2/目录3')
-    write_file('test_root/目录1/文件1', '内容1')
-    write_file('test_root/目录1/目录2/文件2', '内容2')
-    write_file('test_root/目录1/目录2/目录3/文件3', '内容3')
+    write_file('test_root/目录1/文件1', u'内容1')
+    write_file('test_root/目录1/目录2/文件2', u'内容2')
+    write_file('test_root/目录1/目录2/目录3/文件3', u'内容3')
     os.system('%s test_root/测试.zip test_root/目录1' % zip_cmd)
     os.system('%s test_root/测试.zip test_root/解压' % unzip_cmd)
-    check_file('test_root/解压/目录1/文件1', '内容1')
-    check_file('test_root/解压/目录1/目录2/文件2', '内容2')
-    check_file('test_root/解压/目录1/目录2/目录3/文件3', '内容3')
+    check_file('test_root/解压/目录1/文件1', u'内容1')
+    check_file('test_root/解压/目录1/目录2/文件2', u'内容2')
+    check_file('test_root/解压/目录1/目录2/目录3/文件3', u'内容3')
 
 
 def run_tests():
     if sys.platform == 'win32':
         zip_cmd = 'zip.exe'
         unzip_cmd = 'unzip.exe'
+        zipa_cmd = 'zipa.exe'
+        unzipa_cmd = 'unzipa.exe'
     else:
         zip_cmd = './zip'
         unzip_cmd = './unzip'
@@ -107,7 +108,22 @@ def run_tests():
             shutil.rmtree('test_root')
         os.makedirs('test_root')
         test_function(zip_cmd, unzip_cmd)
-    shutil.rmtree('test_root')
+
+    if sys.platform == 'win32':
+        for test_function in (
+            test_single_file,
+            test_single_directory,
+            test_directory_tree,
+            test_wildcard1,
+            test_wildcard2,
+            test_non_ascii_file_name,
+        ):
+            if os.path.exists('test_root'):
+                shutil.rmtree('test_root')
+            os.makedirs('test_root')
+            if test_function != test_non_ascii_file_name or locale.getpreferredencoding() in ('cp65001', 'cp936'):
+                test_function(zipa_cmd, unzipa_cmd)
+    # shutil.rmtree('test_root')
 
 
 def main():

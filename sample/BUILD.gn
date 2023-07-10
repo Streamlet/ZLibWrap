@@ -1,13 +1,43 @@
-executable("zip") {
-  testonly = true
-  sources = [ "zip.cc" ]
-  include_dirs = [ "../include" ]
-  deps = [ "../src:zlibwrap" ]
-}
+if (is_win) {
+  executable("zip") {
+    testonly = true
+    sources = [ "zip_win.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
 
-executable("unzip") {
-  testonly = true
-  sources = [ "unzip.cc" ]
-  include_dirs = [ "../include" ]
-  deps = [ "../src:zlibwrap" ]
+  executable("unzip") {
+    testonly = true
+    sources = [ "unzip_win.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
+
+  executable("zipa") {
+    testonly = true
+    sources = [ "zip.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
+
+  executable("unzipa") {
+    testonly = true
+    sources = [ "unzip.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
+} else {
+  executable("zip") {
+    testonly = true
+    sources = [ "zip.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
+
+  executable("unzip") {
+    testonly = true
+    sources = [ "unzip.cc" ]
+    include_dirs = [ "../include" ]
+    deps = [ "../src:zlibwrap" ]
+  }
 }

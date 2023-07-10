@@ -24,6 +24,9 @@
  * @return true/false
  */
 ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern);
+#ifdef _WIN32
+ZLIBWRAP_API bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
+#endif
 
 /**
  * @brief Extract files from a ZIP file.
@@ -33,3 +36,6 @@ ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern);
  * @return true/false
  */
 ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir);
+#ifdef _WIN32
+ZLIBWRAP_API bool ZipExtract(const wchar_t *zip_file, const wchar_t *target_dir);
+#endif

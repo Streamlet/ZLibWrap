@@ -10,6 +10,9 @@ namespace zlibwrap {
  * @return true/false
  */
 bool ZipCompress(const char *zip_file, const char *pattern);
+#ifdef _WIN32
+bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
+#endif
 
 /**
  * @brief Extract files from a ZIP file.
@@ -19,5 +22,8 @@ bool ZipCompress(const char *zip_file, const char *pattern);
  * @return true/false
  */
 bool ZipExtract(const char *zip_file, const char *target_dir);
+#ifdef _WIN32
+bool ZipExtract(const wchar_t *zip_file, const wchar_t *target_dir);
+#endif
 
 } // namespace zlibwrap
