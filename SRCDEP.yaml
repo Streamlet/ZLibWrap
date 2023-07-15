@@ -4,7 +4,7 @@
 DEPS:
   build:
     GIT_REPO: https://github.com/Streamlet/gn_toolchain.git
-    GIT_TAG: v1.0
+    GIT_TAG: v1.1
 
   thirdparty/loki:
     URL: https://sourceforge.net/projects/loki-lib/files/Loki/Loki%200.1.7/loki-0.1.7.tar.bz2/download

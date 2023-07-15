@@ -1,26 +1,26 @@
 if (is_win) {
-  executable("zip") {
+  console_app("zip") {
     testonly = true
     sources = [ "zip_win.cc" ]
     include_dirs = [ "../include" ]
     deps = [ "../src:zlibwrap" ]
   }
 
-  executable("unzip") {
+  console_app("unzip") {
     testonly = true
     sources = [ "unzip_win.cc" ]
     include_dirs = [ "../include" ]
     deps = [ "../src:zlibwrap" ]
   }
 
-  executable("zipa") {
+  console_app("zipa") {
     testonly = true
     sources = [ "zip.cc" ]
     include_dirs = [ "../include" ]
     deps = [ "../src:zlibwrap" ]
   }
 
-  executable("unzipa") {
+  console_app("unzipa") {
     testonly = true
     sources = [ "unzip.cc" ]
     include_dirs = [ "../include" ]
