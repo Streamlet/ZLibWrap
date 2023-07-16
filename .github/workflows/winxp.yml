@@ -26,7 +26,7 @@ jobs:
       run: |
         pip install PyYAML
 
-    - name: Setup install Microsoft.VisualStudio.Component.WinXP
+    - name: Install Microsoft.VisualStudio.Component.WinXP
       run: |
         "%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\setup.exe" modify --quiet --productId  Microsoft.VisualStudio.Product.Enterprise --channelId VisualStudio.17.Release --add Microsoft.VisualStudio.Component.WinXP
 
@@ -64,13 +64,12 @@ jobs:
           out\${{ matrix.config }}_${{ matrix.arch }}\zip.exe.pdb,`
           out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe,`
           out\${{ matrix.config }}_${{ matrix.arch }}\unzip.exe.pdb `
-          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrap.zip
+          out\${{ matrix.config }}_${{ matrix.arch }}\zlibwrap_win32_${{ matrix.arch }}.zip
       shell: pwsh
 
     - name: Upload Release on push tag
-      if: startsWith(github.ref, 'refs/tags/v') && matrix.config == 'release'
+      if: startsWith(github.ref, 'refs/tags/v') && matrix.config == 'release' && matrix.arch == 'x86'
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: out/${{ matrix.config }}_${{ matrix.arch }}/zlibwrap.zip
-        asset_name: zlibwrap_${{ github.ref_name }}_${{ env[matrix.arch] }}.zip
+        file: out/${{ matrix.config }}_${{ matrix.arch }}/zlibwrap_win32_${{ matrix.arch }}.zip
