@@ -1,4 +1,4 @@
-name: windows
+name: winxp
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows-latest ]
-        arch: [ x64, x86 ]
+        arch: [ x86 ]
         config: [ debug, release ]
 
     steps:
@@ -25,6 +25,10 @@ jobs:
     - name: Setup python environment
       run: |
         pip install PyYAML
+
+    - name: Setup install Microsoft.VisualStudio.Component.WinXP
+      run: |
+        "%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\setup.exe" modify --quiet --productId  Microsoft.VisualStudio.Product.Enterprise --channelId VisualStudio.17.Release --add Microsoft.VisualStudio.Component.WinXP
 
     - name: Check out code
       uses: actions/checkout@v3
@@ -39,7 +43,7 @@ jobs:
 
     - name: Compile
       run: |
-        build\\bin\\gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }}"
+        build\\bin\\gn gen out/${{ matrix.config }}_${{ matrix.arch }} --args="target_cpu=\"${{ matrix.arch }}\" is_debug=${{ matrix.config == 'debug' }} is_winxp=true"
         build\\bin\\ninja -C out/${{ matrix.config }}_${{ matrix.arch }}
 
     - name: Test
