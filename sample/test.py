@@ -90,8 +90,6 @@ def run_tests():
     if sys.platform == 'win32':
         zip_cmd = 'zip.exe'
         unzip_cmd = 'unzip.exe'
-        zipa_cmd = 'zipa.exe'
-        unzipa_cmd = 'unzipa.exe'
     else:
         zip_cmd = './zip'
         unzip_cmd = './unzip'
@@ -109,21 +107,7 @@ def run_tests():
         os.makedirs('test_root')
         test_function(zip_cmd, unzip_cmd)
 
-    if sys.platform == 'win32':
-        for test_function in (
-            test_single_file,
-            test_single_directory,
-            test_directory_tree,
-            test_wildcard1,
-            test_wildcard2,
-            test_non_ascii_file_name,
-        ):
-            if os.path.exists('test_root'):
-                shutil.rmtree('test_root')
-            os.makedirs('test_root')
-            if test_function != test_non_ascii_file_name or locale.getpreferredencoding() in ('cp65001', 'cp936'):
-                test_function(zipa_cmd, unzipa_cmd)
-    # shutil.rmtree('test_root')
+    shutil.rmtree('test_root')
 
 
 def main():

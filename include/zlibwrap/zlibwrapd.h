@@ -16,6 +16,10 @@
 #endif
 // clang-format on
 
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+
 /**
  * @brief Compress files to a ZIP file.
  *
@@ -23,9 +27,10 @@
  * @param pattern  Source files, supporting wildcards.
  * @return true/false
  */
-ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern);
 #ifdef _WIN32
-ZLIBWRAP_API bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
+ZLIBWRAP_API bool ZipCompress(const TCHAR *zip_file, const TCHAR *pattern);
+#else
+ZLIBWRAP_API bool ZipCompress(const char *zip_file, const char *pattern);
 #endif
 
 /**
@@ -35,7 +40,8 @@ ZLIBWRAP_API bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
  * @param target_dir Directory to output files.
  * @return true/false
  */
-ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir);
 #ifdef _WIN32
-ZLIBWRAP_API bool ZipExtract(const wchar_t *zip_file, const wchar_t *target_dir);
+ZLIBWRAP_API bool ZipExtract(const TCHAR *zip_file, const TCHAR *target_dir);
+#else
+ZLIBWRAP_API bool ZipExtract(const char *zip_file, const char *target_dir);
 #endif

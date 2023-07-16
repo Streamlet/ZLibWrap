@@ -1,43 +1,19 @@
-if (is_win) {
-  console_app("zip") {
-    testonly = true
-    sources = [ "zip_win.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
+executable("zip") {
+  testonly = true
+  if (is_win) {
+    configs += [ "../build/config/win:console_subsystem" ]
   }
+  sources = [ "zip.cc" ]
+  include_dirs = [ "../include" ]
+  deps = [ "../src:zlibwrap" ]
+}
 
-  console_app("unzip") {
-    testonly = true
-    sources = [ "unzip_win.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
+executable("unzip") {
+  testonly = true
+  if (is_win) {
+    configs += [ "../build/config/win:console_subsystem" ]
   }
-
-  console_app("zipa") {
-    testonly = true
-    sources = [ "zip.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
-  }
-
-  console_app("unzipa") {
-    testonly = true
-    sources = [ "unzip.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
-  }
-} else {
-  executable("zip") {
-    testonly = true
-    sources = [ "zip.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
-  }
-
-  executable("unzip") {
-    testonly = true
-    sources = [ "unzip.cc" ]
-    include_dirs = [ "../include" ]
-    deps = [ "../src:zlibwrap" ]
-  }
+  sources = [ "unzip.cc" ]
+  include_dirs = [ "../include" ]
+  deps = [ "../src:zlibwrap" ]
 }

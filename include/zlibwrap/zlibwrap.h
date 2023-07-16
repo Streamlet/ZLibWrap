@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+
 namespace zlibwrap {
 
 /**
@@ -9,9 +13,10 @@ namespace zlibwrap {
  * @param pattern  Source files, supporting wildcards.
  * @return true/false
  */
-bool ZipCompress(const char *zip_file, const char *pattern);
 #ifdef _WIN32
-bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
+bool ZipCompress(const TCHAR *zip_file, const TCHAR *pattern);
+#else
+bool ZipCompress(const char *zip_file, const char *pattern);
 #endif
 
 /**
@@ -21,9 +26,10 @@ bool ZipCompress(const wchar_t *zip_file, const wchar_t *pattern);
  * @param target_dir Directory to output files.
  * @return true/false
  */
-bool ZipExtract(const char *zip_file, const char *target_dir);
 #ifdef _WIN32
-bool ZipExtract(const wchar_t *zip_file, const wchar_t *target_dir);
+bool ZipExtract(const TCHAR *zip_file, const TCHAR *target_dir);
+#else
+bool ZipExtract(const char *zip_file, const char *target_dir);
 #endif
 
 } // namespace zlibwrap

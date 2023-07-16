@@ -3,26 +3,34 @@
 #include <stdio.h>
 #include <zlibwrap/zlibwrap.h>
 
+#ifndef _WIN32
+#define _T(s) s
+#define TCHAR char
+#define _tmain main
+#define _tsetlocale setlocale
+#define _tprintf printf
+#endif
+
 void ShowHelp() {
-  printf("Usage: unzip <zip_file> <target_dir>\n");
+  _tprintf(_T("Usage: unzip <zip_file> <target_dir>\n"));
 }
 
-int main(int argc, char *argv[]) {
-  setlocale(LC_ALL, "");
+int _tmain(int argc, TCHAR *argv[]) {
+  _tsetlocale(LC_ALL, _T(""));
 
   if (argc != 3) {
     ShowHelp();
     return 0;
   }
-  const char *zip_file = argv[1];
-  const char *target_dir = argv[2];
+  const TCHAR *zip_file = argv[1];
+  const TCHAR *target_dir = argv[2];
 
   if (!zlibwrap::ZipExtract(zip_file, target_dir)) {
-    printf("Failed to Extract %s to %s.\n", zip_file, target_dir);
+    _tprintf(_T("Failed to Extract %s to %s.\n"), zip_file, target_dir);
     return -1;
   }
 
-  printf("Extracted %s to %s successfully.\n", zip_file, target_dir);
+  _tprintf(_T("Extracted %s to %s successfully.\n"), zip_file, target_dir);
 
   return 0;
 }
