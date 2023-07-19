@@ -75,6 +75,7 @@ source_set("minizip") {
       "zlib/contrib/minizip/iowin32.c",
       "zlib/contrib/minizip/iowin32.h",
     ]
+    cflags = [ "/wd5105" ]
   } else {
     cflags = [ "-Wno-deprecated-non-prototype" ]
   }
