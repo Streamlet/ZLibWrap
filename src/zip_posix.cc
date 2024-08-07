@@ -59,7 +59,7 @@ bool ZipAddFiles(zipFile zf, const std::string &inner_dir, const std::string &pa
     std::string source_path = globbuf.gl_pathv[i];
     size_t slash_pos = source_path.rfind('/');
     if (slash_pos != std::string::npos)
-      inner_path += source_path.substr(slash_pos);
+      inner_path += source_path.substr(slash_pos + 1);
     else
       inner_path += source_path;
 
