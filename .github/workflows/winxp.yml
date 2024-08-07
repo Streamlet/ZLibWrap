@@ -16,7 +16,7 @@ jobs:
         shell: cmd
     strategy:
       matrix:
-        os: [ windows-latest ]
+        os: [ windows-2019 ]
         arch: [ x86 ]
         config: [ debug, release ]
 
@@ -25,10 +25,6 @@ jobs:
     - name: Setup python environment
       run: |
         pip install PyYAML
-
-    - name: Install Microsoft.VisualStudio.Component.WinXP
-      run: |
-        "%ProgramFiles(x86)%\\Microsoft Visual Studio\\Installer\\setup.exe" modify --quiet --productId  Microsoft.VisualStudio.Product.Enterprise --channelId VisualStudio.17.Release --add Microsoft.VisualStudio.Component.WinXP
 
     - name: Check out code
       uses: actions/checkout@v3
